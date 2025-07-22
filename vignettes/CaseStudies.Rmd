@@ -1,0 +1,98 @@
+---
+title: "Case Studies"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Case Studies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(MD2sample)
+cases=MD2sample::case.studies(ReturnCaseNames=TRUE)
+```
+
+```{r}
+multiple.graphs = function (px, py,xname=" ") {
+  egg::ggarrange(px, py, ncol = 2, nrow = 1)
+} 
+```
+
+This vignette lists the case studies included in the package:
+
+## Dim=2, equal marginals
+
+```{r}
+for(i in seq_along(cases)) {
+   if(!endsWith(cases[i], "D2")) next
+   tmp=case.studies(i, 2000)
+   print(cases[i])
+   p=tmp$param_alt[2]
+   if(startsWith(cases[i],"Dalitz")) p=10*p
+   dta=tmp$f(p)
+   dtax=data.frame(x=dta$x[,1], y=dta$x[,2])
+   dtay=data.frame(x=dta$y[,1], y=dta$y[,2])
+   px=ggplot2::ggplot(dtax, ggplot2::aes(x=x, y=y))+
+     ggplot2::geom_point(color="blue", alpha=0.5, size=0.5)+
+     ggplot2::labs(x=expression(x[1]), y=expression(x[2])) 
+     
+   py=ggplot2::ggplot(dtay, ggplot2::aes(x=x, y=y))+
+     ggplot2::geom_point(color="red", alpha=0.5)+
+     ggplot2::labs(x=expression(x[1]), y=expression(x[2])) 
+  multiple.graphs(px, py, cases[i])
+}
+```
+
+## Dim=2, unequal marginals
+
+```{r}
+for(i in seq_along(cases)) {
+   if(!endsWith(cases[i], "M")) next
+   tmp=case.studies(i, 2000)
+   print(cases[i])
+   p=tmp$param_alt[2]
+   if(startsWith(cases[i],"Dalitz")) p=10*p
+   dta=tmp$f(p)
+   dtax=data.frame(x=dta$x[,1], y=dta$x[,2])
+   dtay=data.frame(x=dta$y[,1], y=dta$y[,2])
+   px=ggplot2::ggplot(dtax, ggplot2::aes(x=x, y=y))+
+     ggplot2::geom_point(color="blue", alpha=0.5, size=0.5)+
+     ggplot2::labs(x=expression(x[1]), y=expression(x[2])) 
+     
+   py=ggplot2::ggplot(dtay, ggplot2::aes(x=x, y=y))+
+     ggplot2::geom_point(color="red", alpha=0.5)+
+     ggplot2::labs(x=expression(x[1]), y=expression(x[2])) 
+  multiple.graphs(px, py, cases[i])
+}
+```
+
+## Dim=5, equal marginals
+
+
+-   NormalD5:  multivariate normal distribution with equal marginals.  
+-   tD5:  multivariate t distribution with 5 degrees of freedom and equal marginals.                 
+- FrankD5: Frank cupola.  
+- ClaytonD5: Clayton cupola.  
+- GumbelD5: Gumbel copula.  
+- JoeD5: Joe cupola.  
+- UniformFrankD5: mixture of uniform and Frank cupola.  
+- FrankClaytonD5: mixture of Frank and Clayton cupolas.  
+- FrankJoeD5: mixture of Frank and Joe cupolas.           
+
+
+## Dim=5, unequal marginals
+
+- UniformExponentialM5: Exponential distributions.  
+- FrankExponentialM5: Frank cupola with exponential marginals.  
+- FrankLinearM5: Frank cupola with linear marginals.  
+- FrankNormalM5: Frank cupola with linear marginals.  
+- ClaytonExponentialM5: Clayton cupola with exponential marginals.  
+- ClaytonLinearM5: Clayton cupola with linear marginals.  
+- ClaytonNormalM5: Clayton cupola with linear marginals.
