@@ -9,7 +9,8 @@ chisq2D_test_cont(
   dta_y,
   Ranges = matrix(c(-Inf, Inf, -Inf, Inf), 2, 2),
   nbins = c(5, 5),
-  minexpcount = 5
+  minexpcount = 5,
+  SuppressMessages = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ chisq2D_test_cont(
 \item{nbins}{=c(5,5) number of bins in x and y direction}
 
 \item{minexpcount}{=5 minimum counts required per bin}
+
+\item{SuppressMessages}{=FALSE, print informative messages?}
 }
 \value{
 a list with statistics and p values

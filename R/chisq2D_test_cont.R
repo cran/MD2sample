@@ -4,9 +4,10 @@
 #' @param Ranges =matrix(c(-Inf, Inf, -Inf, Inf),2,2) a 2x2 matrix with lower and upper bounds
 #' @param nbins =c(5,5) number of bins in x and y direction
 #' @param minexpcount =5 minimum counts required per bin
+#' @param SuppressMessages =FALSE, print informative messages?
 #' @return a list with statistics and p values
 chisq2D_test_cont=function(dta_x, dta_y, Ranges =matrix(c(-Inf, Inf, -Inf, Inf),2,2),
-                           nbins=c(5, 5), minexpcount=5) {
+                   nbins=c(5, 5), minexpcount=5, SuppressMessages=FALSE) {
   if(ncol(dta_x)!=2) {message("Test is for two dimensional data only!");return(NULL)}
   dta_xy=rbind(dta_x, dta_y)
   low=low=apply(dta_xy,2,min)
@@ -79,9 +80,12 @@ chisq2D_test_cont=function(dta_x, dta_y, Ranges =matrix(c(-Inf, Inf, -Inf, Inf),
            }
          }
        if(step>min(nbins)) {
-         message("Not enough data for the number of bins.")
-         message(paste0("Will try nbins=(",nbins[1]-1,",",nbins[2]-1,")"))
-         return(chisq2D_test_cont(dta_x, dta_y, nbins-1, minexpcount))
+         if(!SuppressMessages) {
+           message("Not enough data for the number of bins.")
+           message(paste0("Will try nbins=(",nbins[1]-1,",",nbins[2]-1,")"))
+         }   
+         return(chisq2D_test_cont(dta_x, dta_y, Ranges=Ranges, 
+                        nbins=nbins-1, minexpcount=minexpcount))
        }   
        if(nearest[1]<0) {step=step+1;next}
        

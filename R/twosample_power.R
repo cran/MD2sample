@@ -98,7 +98,7 @@ twosample_power=function(f, ..., TS, TSextra, alpha=0.05, B=1000,
   Continuous=TRUE
   if(is.matrix(dta)) { #Discrete Data
     dta=list(x=dta[,3], y=dta[,4], vals_x=dta[,1], vals_y=dta[,2])
-    x=matrix(1:4,2,2)#just some dummy numbers
+    x=matrix(1:4,2,2) #just some dummy numbers
     y=matrix(1:4,2,2)
     Continuous=FALSE
     DoTransform=FALSE

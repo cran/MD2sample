@@ -298,8 +298,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
     if (which == "UniformRotateM") {
         return(list(f = function(alpha = 0) {
             x = matrix(stats::runif(2 * nx), ncol = 2)
-            y = matrix(stats::runif(2 * ny), ncol = 2) %*% matrix(c(cos(alpha), 
-                sin(alpha), -sin(alpha), cos(alpha)), 2, 2)
+            y = matrix(stats::runif(2 * ny), ncol = 2) %*% 
+              matrix(c(cos(alpha), sin(alpha), -sin(alpha), 
+                       cos(alpha)), 2, 2)
             out = list(x = x, y = y)
             if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)

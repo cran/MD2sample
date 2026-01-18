@@ -144,7 +144,7 @@ rnull=function(dta) {
 }
 
 ## -----------------------------------------------------------------------------
-# Only run these methods for hypbrid problem
+# Only run these methods for hybrid problem
 mt=c("KS", "K", "CvM", "AD", "NN1", "NN5", "AZ", "BF", "BG")
 # Null hypothesis is true:
 twosample_power(f, c(0, 1), doMethods = mt, B=200, maxProcessor = 1)

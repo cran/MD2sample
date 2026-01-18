@@ -1,3 +1,6 @@
+# MD2sample 1.1.0 January 19, 2026
+      Some minor bug fixes
+
 # MD2sample 1.0.0 August 13, 2025
       First time upload.   
       This package brings together a large number of tests for the multivariate

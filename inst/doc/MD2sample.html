@@ -48,8 +48,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +61,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -738,7 +739,7 @@ is, the true type I error probability is much smaller than the nominal
 one. This in turn makes the power of the test much lower as well.
 Instead one can supply a routine that generates new data, just as one
 would in a goodness-of-fit test. Moreover, all the methods who find
-their own p values will now fail completely and so sshould not be
+their own p values will now fail completely and so should not be
 run.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># generate real and MC data sets:</span></span>
 <span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>f<span class="ot">=</span><span class="cf">function</span>(mu) {</span>
@@ -759,7 +760,7 @@ run.</p>
 <span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a>   y<span class="ot">=</span>mvtnorm<span class="sc">::</span><span class="fu">rmvnorm</span>(<span class="fu">nrow</span>(x), <span class="fu">apply</span>(x, <span class="dv">2</span>, mean), <span class="fu">cor</span>(x))</span>
 <span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">x=</span>x, <span class="at">y=</span>y)</span>
 <span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># Only run these methods for hypbrid problem</span></span>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># Only run these methods for hybrid problem</span></span>
 <span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>mt<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;KS&quot;</span>, <span class="st">&quot;K&quot;</span>, <span class="st">&quot;CvM&quot;</span>, <span class="st">&quot;AD&quot;</span>, <span class="st">&quot;NN1&quot;</span>, <span class="st">&quot;NN5&quot;</span>, <span class="st">&quot;AZ&quot;</span>, <span class="st">&quot;BF&quot;</span>, <span class="st">&quot;BG&quot;</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co"># Null hypothesis is true:</span></span>
 <span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="fu">twosample_power</span>(f, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">doMethods =</span> mt, <span class="at">B=</span><span class="dv">200</span>, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>

@@ -283,7 +283,7 @@ twosample_power(g, c(0, 0.25, 0.5), B=200,
 
 We have a data set x and we want to test whether it comes from a bivariate normal distribution. Instead of a goodness-of-fit test, however, we generate a Monte Carlo data set y from a bivariate normal rv with mean and covariance estimated from the real data set x, and then run a two-sample test.
 
-In this scenario the two data sets are not independent, and the permutation approach to finding p values is extremely conservative, that is, the true type I error probability is much smaller than the nominal one. This in turn makes the power of the test much lower as well. Instead one can supply a routine that generates new data, just as one would in a goodness-of-fit test. Moreover, all the methods who find their own p values will now fail completely and so sshould not be run.
+In this scenario the two data sets are not independent, and the permutation approach to finding p values is extremely conservative, that is, the true type I error probability is much smaller than the nominal one. This in turn makes the power of the test much lower as well. Instead one can supply a routine that generates new data, just as one would in a goodness-of-fit test. Moreover, all the methods who find their own p values will now fail completely and so should not be run.
 
 ```{r}
 # generate real and MC data sets:
@@ -308,7 +308,7 @@ rnull=function(dta) {
 ```
 
 ```{r}
-# Only run these methods for hypbrid problem
+# Only run these methods for hybrid problem
 mt=c("KS", "K", "CvM", "AD", "NN1", "NN5", "AZ", "BF", "BG")
 # Null hypothesis is true:
 twosample_power(f, c(0, 1), doMethods = mt, B=200, maxProcessor = 1)

@@ -50,6 +50,7 @@ for(i in seq_along(cases)) {
 }
 ```
 
+
 ## Dim=2, unequal marginals
 
 ```{r}
@@ -72,6 +73,7 @@ for(i in seq_along(cases)) {
   multiple.graphs(px, py, cases[i])
 }
 ```
+
 
 ## Dim=5, equal marginals
 

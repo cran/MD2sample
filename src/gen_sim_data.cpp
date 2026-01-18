@@ -93,7 +93,7 @@ Rcpp::List gen_disc(IntegerVector x,
   CharacterVector B=TSextra.names();
   if(in(A, B)[0]) {
     NumericMatrix simdta(k,4);
-    rownames(simdta) = CharacterVector::create("vals_x", "vals_y", "x", "y");
+    colnames(simdta) = CharacterVector::create("vals_x", "vals_y", "x", "y");
     simdta(_,0)=vals_x;
     simdta(_,1)=vals_y;  
     simdta(_,2)=x;

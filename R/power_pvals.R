@@ -60,7 +60,8 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
          pwr[i, 1:numtests] = pwr[i, 1:numtests] + ifelse(TS_sim<alpha, 1, 0)
          if(DoChi) {
            if(length(nbins)==1) nbins=c(nbins, nbins)
-           chi=chisq2D_test_cont(dta$x, dta$y, Ranges, nbins, minexpcount)$p.values
+           chi=chisq2D_test_cont(dta$x, dta$y, Ranges, nbins, minexpcount,
+                                 SuppressMessages=TRUE)$p.values
            pwr[i, numtests+1:2] = pwr[i, numtests+1:2] + ifelse(chi<alpha, 1, 0)
          }   
        }
@@ -84,8 +85,16 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
      }
      else {      
        dta=rxy(avals[1], bvals[1])
-       if(typeTS>=4) 
-          dta=list(x=dta[,"x"],y=dta[,"y"],vals_x=dta[,"vals_x"],vals_y=dta[,"vals_y"])
+       if(typeTS>=4) {
+          dn=colnames(dta)
+          if("x"%in%dn & "y"%in%dn & "vals_x"%in%dn & "vals_y"%in%dn)
+             dta=list(x=dta[,"x"],y=dta[,"y"],vals_x=dta[,"vals_x"],vals_y=dta[,"vals_y"])
+          else {
+            dta=list(x=dta[,3],y=dta[,4],vals_x=dta[,1],vals_y=dta[,2])
+            message("data matrix is missing column names. Assumed order is:")
+            message("vals_x, vals_y, x, y")
+          }
+       }
        TS_sim=calcTS(dta, TS, typeTS, TSextra)
        pwr=matrix(0,  length(avals), length(TS_sim))
        colnames(pwr)=names(TS_sim)
@@ -93,8 +102,13 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
        for(i in 1:length(avals)) {
          for(j in 1:B) {
            dta=rxy(avals[i], bvals[i])
-           if(typeTS>=4) 
-             dta=list(x=dta[,"x"],y=dta[,"y"],vals_x=dta[,"vals_x"],vals_y=dta[,"vals_y"])
+           if(typeTS>=4) {
+             if("x"%in%dn & "y"%in%dn & "vals_x"%in%dn & "vals_y"%in%dn)
+               dta=list(x=dta[,"x"],y=dta[,"y"],vals_x=dta[,"vals_x"],vals_y=dta[,"vals_y"])
+             else {
+               dta=list(x=dta[,3],y=dta[,4],vals_x=dta[,1],vals_y=dta[,2])
+             }
+           }
            TS_sim=calcTS(dta, TS, typeTS, TSextra)
            for(k in 1:ncol(pwr)) 
               pwr[i,k] = pwr[i,k] + ifelse(TS_sim[k]<alpha, 1, 0)/B
