@@ -420,7 +420,7 @@ test:</p>
 <span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; $p.values</span></span>
 <span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;     KS      K    CvM     AD    NN1    NN5     AZ     BF     BG     FR    NN0 </span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; 0.7650 0.7600 0.7500 0.8700 0.1200 0.3450 0.4500 0.5500 0.3450 0.1353 0.0000 </span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; 0.7650 0.7600 0.7500 0.8700 0.1200 0.3450 0.4500 0.5500 0.3450 0.1353 0.1555 </span></span>
 <span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;    CF1    CF2    CF3    CF4   Ball     ES     EP </span></span>
 <span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; 0.1353 0.4864 0.1298 0.3027 0.3761 0.3479 0.1144</span></span></code></pre></div>
 <p><strong>Arguments of twosample_test</strong></p>
@@ -530,12 +530,12 @@ generates these data sets:</p>
 <span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>}   </span></code></pre></div>
 <p>Now we can run</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">twosample_power</span>(f, <span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.5</span>), <span class="at">B=</span>B, <span class="at">maxProcessor=</span><span class="dv">1</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt;        KS    K   CvM    AD   NN1  NN5    AZ    BF   BG   FR NN0  CF1  CF2  CF3</span></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; 0   0.080 0.11 0.050 0.035 0.055 0.04 0.045 0.055 0.04 0.05   1 0.05 0.05 0.04</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; 0.5 0.135 0.21 0.255 0.280 0.255 0.29 0.240 0.245 0.04 0.26   1 0.26 0.11 0.24</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;       CF4  Ball    ES    EP</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; 0   0.055 0.055 0.045 0.040</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; 0.5 0.185 0.115 0.435 0.455</span></span></code></pre></div>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt;        KS    K   CvM    AD   NN1  NN5    AZ    BF   BG   FR   NN0  CF1  CF2</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; 0   0.080 0.11 0.050 0.035 0.055 0.04 0.045 0.055 0.04 0.05 0.045 0.05 0.05</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; 0.5 0.135 0.21 0.255 0.280 0.255 0.29 0.240 0.245 0.04 0.26 0.215 0.26 0.11</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt;      CF3   CF4  Ball    ES    EP</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; 0   0.04 0.055 0.055 0.045 0.040</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; 0.5 0.24 0.185 0.115 0.435 0.455</span></span></code></pre></div>
 <p><strong>Arguments of twosample_power</strong></p>
 <ul>
 <li><em>f</em> a function that generates data</li>

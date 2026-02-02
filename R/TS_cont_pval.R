@@ -23,7 +23,7 @@ TS_cont_pval = function(x, y) {
 #  Nearest Neighbor variant   
    NN = c(FNN::get.knn(rbind(x,y), 1)$nn.index)
    out[[1]][2]=sum(NN[1:nx]<=nx)/n
-   out[[2]][2]=1-stats::pbinom(n*out[[1]][3], nx, nx/n)
+   out[[2]][2]=1-stats::pbinom(n*out[[1]][2], nx, nx/n)
 #  four tests by Chen and Friedman
    tmp=try(edge.tests(x, y), TRUE)
    if(!is.list(tmp)) tmp=list(statistic=-99, p.value=-99)

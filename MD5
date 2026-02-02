@@ -1,10 +1,10 @@
-00171183fa417108d9163a64de6a710b *DESCRIPTION
+57d87b25d7cfb3049161634c36d172a8 *DESCRIPTION
 e4853496aa58988a7ab1366b2a1f9645 *NAMESPACE
-f25307916fb7a0ed58d4b427483482be *NEWS.md
+bde03f9979fd91fe2a6334f7619b0182 *NEWS.md
 5a9b00a051c40511e7ef321751c9900a *R/FR.test.R
 ea5880553d5c3e599f1e6215360118a1 *R/MD2sample-package.R
 6ef8004b80e648bbc594e07a7a5ad67e *R/RcppExports.R
-c413b9d874fd3fe97b5152d631ab38b7 *R/TS_cont_pval.R
+d413f7ebba2d9b512d0f4b357046598e *R/TS_cont_pval.R
 67c0bc7dabf26cfbfd3b1f3e4f2610a6 *R/bincounterR.R
 6975364a4ab487f1156fafa67c8d52f3 *R/case.studies.R
 f2cf933c2dd9c4f6378255d293d22a5c *R/change.marginals.R
@@ -27,10 +27,10 @@ a3bba7454f2f469540376779e5c56ad8 *R/twosample_test.R
 c85709fb73f07f40711234eae79f1686 *data/power_studies_results.rda
 8bc0b27e0fa2a128f3428625e9f6eb21 *inst/doc/CaseStudies.R
 ba5871eb949c9c5883603bc9a3e941f7 *inst/doc/CaseStudies.Rmd
-fc12a033fe4156a71b9c1e687f3a5e20 *inst/doc/CaseStudies.html
+ea776f80d028daf24fff633c5d27f963 *inst/doc/CaseStudies.html
 f8c49b2cf9be8bfb0036f8d253db9e52 *inst/doc/MD2sample.R
 201523c35d983a932e3bbf9d224f3803 *inst/doc/MD2sample.Rmd
-f28af0a067688e3f96c6254cc839bce6 *inst/doc/MD2sample.html
+ee5fad220a8cb2a66e1480c545601b05 *inst/doc/MD2sample.html
 07c7e7cd1f83c22aee5d1d8ecac8bf5e *man/FR.test.Rd
 090c21a462113c5da86ccb4bf5dd9fef *man/MD2sample-package.Rd
 f750cc71672dd3a59c494a8d98bcad6f *man/Order.Rd
