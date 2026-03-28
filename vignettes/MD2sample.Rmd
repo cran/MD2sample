@@ -17,7 +17,9 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(MD2sample)
-B=200 
+BT=100  #number of simulations for testing
+BP=50  #number of simulations for power estimation
+# These are set very low to satisfy CRAN submission rules
 ```
 
 **Note** that all examples are run without parallel processing and a small number of simulation runs B to satisfy CRAN submission rules.
@@ -49,7 +51,7 @@ set.seed(123)
 ```{r}
 x1 = mvtnorm::rmvnorm(100, c(0,0))
 y1 = mvtnorm::rmvnorm(120, c(0,0))
-twosample_test(x1, y1, B=B, maxProcessor = 1)
+twosample_test(x1, y1, B=BT, maxProcessor = 1)
 ```
 
 
@@ -86,7 +88,7 @@ this list is passed to *chiTS.cont* and tells the routine to
 
 ```{r}
 twosample_test(x1, y1, TS=chiTS.cont, TSextra=TSextra, 
-               B=B, maxProcessor = 1)
+               B=BT, maxProcessor = 1)
 ```
 
 **Arguments and output of new test routine for continuous data**
@@ -101,7 +103,7 @@ If the routine is written in Rcpp parallel programming is not available.
 If several tests are run one can use the routine *twosample_test_adjusted_pvalue* to find a p value that is adjusted for simultaneous testing:
 
 ```{r}
-twosample_test_adjusted_pvalue(x1, y1, B=c(B,B),
+twosample_test_adjusted_pvalue(x1, y1, B=c(BT, BT),
                                maxProcessor = 1)
 ```
 
@@ -127,7 +129,7 @@ f=function(a=0) {
 Now we can run
 
 ```{r}
-twosample_power(f, c(0,0.5), B=B, maxProcessor=1)
+twosample_power(f, c(0,0.5), B=BP, maxProcessor=1)
 ```
 
 **Arguments of twosample_power**
@@ -152,7 +154,7 @@ Again the user can provide their own routine:
 
 ```{r}
 twosample_power(f, c(0,0.5), TS=chiTS.cont, 
-                TSextra=TSextra, B=B, maxProcessor=1)
+                TSextra=TSextra, B=BP, maxProcessor=1)
 ```
 
 The routine that generates data can also have two arguments:
@@ -173,7 +175,7 @@ If the user routine returns p values run
 ```{r}
 TSextra=list(which="pvalue", nbins=c(5,5))
 twosample_power(f1, c(0,0.5), c(100, 120), 
-                TS=chiTS.cont, TSextra=TSextra, B=B,
+                TS=chiTS.cont, TSextra=TSextra, B=BP,
                 With.p.value=TRUE, maxProcessor=1)
 ```
 
@@ -203,7 +205,7 @@ for(i in 0:5) {
     x2[x2[,1]==i&x2[,2]==j, 4]=sum(a1y==i&a2y==j)
   }
 }
-twosample_test(x2, B=B, maxProcessor = 1)
+twosample_test(x2, B=BT, maxProcessor = 1)
 ```
 
 **Arguments of twosample_test**
@@ -221,7 +223,7 @@ As in the case of continuous data the arguments include *TS*, *TSextra*, *minexp
 Again one can find a p value adjusted for simultaneous testing:
 
 ```{r}
-twosample_test_adjusted_pvalue(x2, B=c(B,B), maxProcessor=1)
+twosample_test_adjusted_pvalue(x2, B=c(BT, BT), maxProcessor=1)
 ```
 
 ### User supplied tests
@@ -231,7 +233,7 @@ The routine *chiTS.disc* (included in package) does a chi-square test for discre
 ```{r}
 TSextra=list(which="statistic")
 twosample_test(x2, TS=chiTS.disc, TSextra=TSextra,
-               B=B, maxProcessor = 1)
+               B=BT, maxProcessor = 1)
 ```
 
 
@@ -264,17 +266,17 @@ g=function(a=0) {
 ```
 
 ```{r}
-twosample_power(g, c(0, 0.25, 0.5), B=200, maxProcessor=1)
+twosample_power(g, c(0, 0.25, 0.5), B=BP, maxProcessor=1)
 ```
 
 or using a user supplied test:
 
 ```{r}
 TSextra=list(which="statistic")
-twosample_power(g, c(0, 0.25, 0.5), B=200, 
+twosample_power(g, c(0, 0.25, 0.5), B=BP, 
                 TS=chiTS.disc, TSextra=TSextra, maxProcessor=1)
 TSextra=list(which="pvalue")
-twosample_power(g, c(0, 0.25, 0.5), B=200, 
+twosample_power(g, c(0, 0.25, 0.5), B=BP, 
     TS=chiTS.disc, TSextra=TSextra, With.p.value = TRUE,
     maxProcessor=1)
 ```
@@ -307,15 +309,15 @@ rnull=function(dta) {
 }
 ```
 
-```{r}
+```{r Hybrid}
 # Only run these methods for hybrid problem
-mt=c("KS", "K", "CvM", "AD", "NN1", "NN5", "AZ", "BF", "BG")
+mt=c("KS", "K", "CvM", "AD", "NN1", "NN5", "AZ", "BF", "BG", "MMD")
 # Null hypothesis is true:
-twosample_power(f, c(0, 1), doMethods = mt, B=200, maxProcessor = 1)
-twosample_power(f, c(0, 1), rnull=rnull, B=200, maxProcessor = 1)
+twosample_power(f, c(0, 1), doMethods = mt, B=BP, maxProcessor = 1)
+twosample_power(f, c(0, 1), rnull=rnull, B=BP, maxProcessor = 1)
 # Null hypothesis is false:
-twosample_power(g, c(0, 0.5), doMethods = mt, B=200, maxProcessor = 1)
-twosample_power(g, c(0, 0.5), rnull=rnull, B=200, maxProcessor = 1)
+twosample_power(g, c(0, 0.5), doMethods = mt, B=BP, maxProcessor = 1)
+twosample_power(g, c(0, 0.5), rnull=rnull, B=BP, maxProcessor = 1)
 ```
 
 As we can see, the true type I error using the permutation method is much smaller than the nominal $\alpha=0.05$, and so the power is lower as well.
@@ -355,7 +357,7 @@ The data set *power_studies_results* included in MD2sample has the results for t
 run.studies(Continuous=TRUE, 
             study=c("NormalD2", "tD2"), 
             param_alt=cbind(c(0.4, 0.4), c(0.7, 0.7)), 
-            alpha=0.1, B=100)
+            alpha=0.1, B=1000)
 ```
 
 Say the new method can find p values without simulation:
@@ -401,25 +403,25 @@ rnull=function(dta) {
 
 ```{r}
 dta=f(0) # Null hypothesis is true
-twosample_test(dta, rnull=rnull, B=B, maxProcessor = 1)
+twosample_test(dta, rnull=rnull, B=BT, maxProcessor = 1)
 ```
 
 ```{r}
 dta=f(0.2) # Null hypothesis is false
-twosample_test(dta, rnull=rnull, B=B, maxProcessor = 1)
+twosample_test(dta, rnull=rnull, B=BT, maxProcessor = 1)
 ```
 
 Again we can find adjusted p values:
 
 ```{r eval=FALSE}
 twosample_test_adjusted_pvalue(dta, rnull=rnull, 
-                               B=B, maxProcessor = 1)
+                               B=BT, maxProcessor = 1)
 ```
 
 and find the power of the tests:
 
 ```{r eval=FALSE}
-twosample_power(f, c(0, 0.5), rnull=rnull, B=B, maxProcessor=1)
+twosample_power(f, c(0, 0.5), rnull=rnull, B=BP, maxProcessor=1)
 ```
 
 
@@ -502,6 +504,12 @@ $$
 &\left(B_{xx}-B_{xy}\right)^2+\left(B_{yy}-B_{xy}\right)^2
 \end{aligned}
 $$
+
+### Methods based on kernel density estimates
+
+**Aggregated Maximum Mean Discrepancy test**
+
+This test is based on a measure of difference between the kernel density estimates of the two data sets, using a number of different kernel bandwidths. For details see [@gretton2023].
 
 ### Methods whose p values are found using a large sample theory
 

@@ -160,6 +160,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mmdagg
+double mmdagg(NumericMatrix x, NumericMatrix y);
+RcppExport SEXP _MD2sample_mmdagg(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(mmdagg(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 // powerC
 List powerC(Function rxy, NumericVector xparam, NumericVector yparam, Function TS, int typeTS, List TSextra, int B);
 RcppExport SEXP _MD2sample_powerC(SEXP rxySEXP, SEXP xparamSEXP, SEXP yparamSEXP, SEXP TSSEXP, SEXP typeTSSEXP, SEXP TSextraSEXP, SEXP BSEXP) {
@@ -215,6 +227,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_MD2sample_gen_cont", (DL_FUNC) &_MD2sample_gen_cont, 3},
     {"_MD2sample_gen_disc", (DL_FUNC) &_MD2sample_gen_disc, 5},
     {"_MD2sample_mdecdf", (DL_FUNC) &_MD2sample_mdecdf, 2},
+    {"_MD2sample_mmdagg", (DL_FUNC) &_MD2sample_mmdagg, 2},
     {"_MD2sample_powerC", (DL_FUNC) &_MD2sample_powerC, 7},
     {"_MD2sample_testC", (DL_FUNC) &_MD2sample_testC, 5},
     {"_MD2sample_transform01", (DL_FUNC) &_MD2sample_transform01, 1},

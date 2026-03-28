@@ -1,6 +1,6 @@
 Package: MD2sample
 Title: Various Methods for the Two Sample Problem in D>1 Dimensions
-Version: 1.1.1
+Version: 1.2.0
 Authors@R: 
     person("Wolfgang", "Rolke", , "wolfgang.rolke@upr.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3514-726X"))
@@ -14,7 +14,7 @@ Description: The routine twosample_test() in this package runs the
     For details of the methods and references see the included vignettes.
 License: GPL (>= 2)
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 LinkingTo: Rcpp
 Imports: Rcpp, parallel, stats, FNN, copula, ade4, gTests, igraph, lsa,
         microbenchmark, mvtnorm, Ball
@@ -23,9 +23,9 @@ VignetteBuilder: knitr
 Depends: R (>= 3.5)
 LazyData: true
 NeedsCompilation: yes
-Packaged: 2026-02-02 19:43:52 UTC; Wolfgang
+Packaged: 2026-03-27 18:11:25 UTC; Wolfgang
 Author: Wolfgang Rolke [aut, cre] (ORCID:
     <https://orcid.org/0000-0002-3514-726X>)
 Maintainer: Wolfgang Rolke <wolfgang.rolke@upr.edu>
 Repository: CRAN
-Date/Publication: 2026-02-02 20:10:02 UTC
+Date/Publication: 2026-03-28 06:50:06 UTC

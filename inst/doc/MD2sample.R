@@ -6,7 +6,9 @@ knitr::opts_chunk$set(
 
 ## ----setup--------------------------------------------------------------------
 library(MD2sample)
-B=200 
+BT=100  #number of simulations for testing
+BP=50  #number of simulations for power estimation
+# These are set very low to satisfy CRAN submission rules
 
 ## -----------------------------------------------------------------------------
 set.seed(123)
@@ -14,17 +16,17 @@ set.seed(123)
 ## -----------------------------------------------------------------------------
 x1 = mvtnorm::rmvnorm(100, c(0,0))
 y1 = mvtnorm::rmvnorm(120, c(0,0))
-twosample_test(x1, y1, B=B, maxProcessor = 1)
+twosample_test(x1, y1, B=BT, maxProcessor = 1)
 
 ## -----------------------------------------------------------------------------
 TSextra=list(which="statistic", nbins=cbind(c(3,3), c(3,4)))
 
 ## -----------------------------------------------------------------------------
 twosample_test(x1, y1, TS=chiTS.cont, TSextra=TSextra, 
-               B=B, maxProcessor = 1)
+               B=BT, maxProcessor = 1)
 
 ## -----------------------------------------------------------------------------
-twosample_test_adjusted_pvalue(x1, y1, B=c(B,B),
+twosample_test_adjusted_pvalue(x1, y1, B=c(BT, BT),
                                maxProcessor = 1)
 
 ## -----------------------------------------------------------------------------
@@ -38,11 +40,11 @@ f=function(a=0) {
 }   
 
 ## -----------------------------------------------------------------------------
-twosample_power(f, c(0,0.5), B=B, maxProcessor=1)
+twosample_power(f, c(0,0.5), B=BP, maxProcessor=1)
 
 ## -----------------------------------------------------------------------------
 twosample_power(f, c(0,0.5), TS=chiTS.cont, 
-                TSextra=TSextra, B=B, maxProcessor=1)
+                TSextra=TSextra, B=BP, maxProcessor=1)
 
 ## -----------------------------------------------------------------------------
 f1=function(a=0, n=100) {
@@ -57,7 +59,7 @@ f1=function(a=0, n=100) {
 ## -----------------------------------------------------------------------------
 TSextra=list(which="pvalue", nbins=c(5,5))
 twosample_power(f1, c(0,0.5), c(100, 120), 
-                TS=chiTS.cont, TSextra=TSextra, B=B,
+                TS=chiTS.cont, TSextra=TSextra, B=BP,
                 With.p.value=TRUE, maxProcessor=1)
 
 ## -----------------------------------------------------------------------------
@@ -77,15 +79,15 @@ for(i in 0:5) {
     x2[x2[,1]==i&x2[,2]==j, 4]=sum(a1y==i&a2y==j)
   }
 }
-twosample_test(x2, B=B, maxProcessor = 1)
+twosample_test(x2, B=BT, maxProcessor = 1)
 
 ## -----------------------------------------------------------------------------
-twosample_test_adjusted_pvalue(x2, B=c(B,B), maxProcessor=1)
+twosample_test_adjusted_pvalue(x2, B=c(BT, BT), maxProcessor=1)
 
 ## -----------------------------------------------------------------------------
 TSextra=list(which="statistic")
 twosample_test(x2, TS=chiTS.disc, TSextra=TSextra,
-               B=B, maxProcessor = 1)
+               B=BT, maxProcessor = 1)
 
 ## -----------------------------------------------------------------------------
 g=function(a=0) {
@@ -111,14 +113,14 @@ g=function(a=0) {
 }
 
 ## -----------------------------------------------------------------------------
-twosample_power(g, c(0, 0.25, 0.5), B=200, maxProcessor=1)
+twosample_power(g, c(0, 0.25, 0.5), B=BP, maxProcessor=1)
 
 ## -----------------------------------------------------------------------------
 TSextra=list(which="statistic")
-twosample_power(g, c(0, 0.25, 0.5), B=200, 
+twosample_power(g, c(0, 0.25, 0.5), B=BP, 
                 TS=chiTS.disc, TSextra=TSextra, maxProcessor=1)
 TSextra=list(which="pvalue")
-twosample_power(g, c(0, 0.25, 0.5), B=200, 
+twosample_power(g, c(0, 0.25, 0.5), B=BP, 
     TS=chiTS.disc, TSextra=TSextra, With.p.value = TRUE,
     maxProcessor=1)
 
@@ -143,15 +145,15 @@ rnull=function(dta) {
    list(x=x, y=y)
 }
 
-## -----------------------------------------------------------------------------
+## ----Hybrid-------------------------------------------------------------------
 # Only run these methods for hybrid problem
-mt=c("KS", "K", "CvM", "AD", "NN1", "NN5", "AZ", "BF", "BG")
+mt=c("KS", "K", "CvM", "AD", "NN1", "NN5", "AZ", "BF", "BG", "MMD")
 # Null hypothesis is true:
-twosample_power(f, c(0, 1), doMethods = mt, B=200, maxProcessor = 1)
-twosample_power(f, c(0, 1), rnull=rnull, B=200, maxProcessor = 1)
+twosample_power(f, c(0, 1), doMethods = mt, B=BP, maxProcessor = 1)
+twosample_power(f, c(0, 1), rnull=rnull, B=BP, maxProcessor = 1)
 # Null hypothesis is false:
-twosample_power(g, c(0, 0.5), doMethods = mt, B=200, maxProcessor = 1)
-twosample_power(g, c(0, 0.5), rnull=rnull, B=200, maxProcessor = 1)
+twosample_power(g, c(0, 0.5), doMethods = mt, B=BP, maxProcessor = 1)
+twosample_power(g, c(0, 0.5), rnull=rnull, B=BP, maxProcessor = 1)
 
 ## ----eval=FALSE---------------------------------------------------------------
 # run.studies(Continuous=TRUE,
@@ -163,7 +165,7 @@ twosample_power(g, c(0, 0.5), rnull=rnull, B=200, maxProcessor = 1)
 # run.studies(Continuous=TRUE,
 #             study=c("NormalD2", "tD2"),
 #             param_alt=cbind(c(0.4, 0.4), c(0.7, 0.7)),
-#             alpha=0.1, B=100)
+#             alpha=0.1, B=1000)
 
 ## -----------------------------------------------------------------------------
 TSextra=list(which="pvalue", nbins=cbind(c(3,3), c(4,4)))
@@ -192,16 +194,16 @@ rnull=function(dta) {
 
 ## -----------------------------------------------------------------------------
 dta=f(0) # Null hypothesis is true
-twosample_test(dta, rnull=rnull, B=B, maxProcessor = 1)
+twosample_test(dta, rnull=rnull, B=BT, maxProcessor = 1)
 
 ## -----------------------------------------------------------------------------
 dta=f(0.2) # Null hypothesis is false
-twosample_test(dta, rnull=rnull, B=B, maxProcessor = 1)
+twosample_test(dta, rnull=rnull, B=BT, maxProcessor = 1)
 
 ## ----eval=FALSE---------------------------------------------------------------
 # twosample_test_adjusted_pvalue(dta, rnull=rnull,
-#                                B=B, maxProcessor = 1)
+#                                B=BT, maxProcessor = 1)
 
 ## ----eval=FALSE---------------------------------------------------------------
-# twosample_power(f, c(0, 0.5), rnull=rnull, B=B, maxProcessor=1)
+# twosample_power(f, c(0, 0.5), rnull=rnull, B=BP, maxProcessor=1)
 

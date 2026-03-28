@@ -116,6 +116,16 @@ mdecdf <- function(dta, pts) {
     .Call(`_MD2sample_mdecdf`, dta, pts)
 }
 
+#' Find test statistic for MMD test
+#' 
+#' @param x A matrix 
+#' @param y A matrix 
+#' @keywords internal
+#' @return A numeric vector with test statistics
+mmdagg <- function(x, y) {
+    .Call(`_MD2sample_mmdagg`, x, y)
+}
+
 #' Find the power of various continuous tests via simutation or permutation.
 #' 
 #' @param rxy a function that generates x and y data.

@@ -1,6 +1,8 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 #include "mdecdf.h"
+#include "mmdagg.h"
+
 //' Find test statistics for continuous data
 //' 
 //' @param x A matrix.
@@ -14,7 +16,7 @@ Rcpp::NumericVector TS_cont(
         Rcpp::NumericMatrix y,
         Rcpp::List TSextra) 
   {
-  Rcpp::CharacterVector methods=Rcpp::CharacterVector::create("KS", "K", "CvM", "AD", "NN1", "NN5", "AZ", "BF", "BG");
+  Rcpp::CharacterVector methods=Rcpp::CharacterVector::create("KS", "K", "CvM", "AD", "NN1", "NN5", "AZ", "BF", "BG", "MMD");
   int const nummethods=methods.size();
   int nx=x.nrow(), ny=y.nrow(), n=nx+ny, i, j, Dim=x.ncol();
   double tmp1, tmp2;
@@ -129,5 +131,8 @@ Rcpp::NumericVector TS_cont(
   TS(7)=-TS(7)/100.0;
   BG(2)=tmp(1)/nx/ny;
   TS(8)=(BG(0)-BG(2))*(BG(0)-BG(2))+(BG(1)-BG(2))*(BG(1)-BG(2))/100.0;
+/* Maximum Mean Discrepancy (MMD) test*/  
+  TS(9)=mmdagg(x, y);
+  
   return TS;
 } 
