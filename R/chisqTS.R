@@ -26,8 +26,8 @@ chiTS.cont=function(x, y, TSextra) {
         Oy[i,j]=nrow(y2)
       }
     }
-    I=(Oy+Ox>0)
     Oxy=Ox+Oy
+    I=(Oxy>3)    
     s=sqrt(sum(Ox[I])/sum(Oy[I]))
     chi[k]=sum((Ox[I]/s-s*Oy[I])^2/Oxy[I])
     df=length(Ox[I])-1
@@ -35,6 +35,7 @@ chiTS.cont=function(x, y, TSextra) {
     names(chi)[k]=paste0("Chisq Stat ", nbins[k,1], ",", nbins[k,2])
     names(pval)[k]=paste0("Chisq Pval ", nbins[k,1], ",", nbins[k,2])
   }  
+  if(TSextra$which=="All") return(list(statistic=chi, p.value=pval, df=df))
   if(startsWith(TSextra$which, "stat")) return(chi)
   pval
 }

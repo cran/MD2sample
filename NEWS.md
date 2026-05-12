@@ -1,3 +1,6 @@
+# MD2sample 1.2.1 May 12, 2026
+      Some minor bug fixes
+      
 # MD2sample 1.2.0 March 23, 2026
       Added a method to the list
       

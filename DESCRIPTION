@@ -1,6 +1,6 @@
 Package: MD2sample
 Title: Various Methods for the Two Sample Problem in D>1 Dimensions
-Version: 1.2.0
+Version: 1.2.1
 Authors@R: 
     person("Wolfgang", "Rolke", , "wolfgang.rolke@upr.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-3514-726X"))
@@ -23,9 +23,9 @@ VignetteBuilder: knitr
 Depends: R (>= 3.5)
 LazyData: true
 NeedsCompilation: yes
-Packaged: 2026-03-27 18:11:25 UTC; Wolfgang
+Packaged: 2026-05-12 14:25:41 UTC; Wolfgang
 Author: Wolfgang Rolke [aut, cre] (ORCID:
     <https://orcid.org/0000-0002-3514-726X>)
 Maintainer: Wolfgang Rolke <wolfgang.rolke@upr.edu>
 Repository: CRAN
-Date/Publication: 2026-03-28 06:50:06 UTC
+Date/Publication: 2026-05-12 15:00:11 UTC

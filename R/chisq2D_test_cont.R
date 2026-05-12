@@ -6,7 +6,7 @@
 #' @param minexpcount =5 minimum counts required per bin
 #' @param SuppressMessages =FALSE, print informative messages?
 #' @return a list with statistics and p values
-chisq2D_test_cont=function(dta_x, dta_y, Ranges =matrix(c(-Inf, Inf, -Inf, Inf),2,2),
+chisq2D_test_cont=function(dta_x, dta_y, Ranges=matrix(c(-Inf, Inf, -Inf, Inf),2,2),
                    nbins=c(5, 5), minexpcount=5, SuppressMessages=FALSE) {
   if(ncol(dta_x)!=2) {message("Test is for two dimensional data only!");return(NULL)}
   dta_xy=rbind(dta_x, dta_y)
@@ -30,9 +30,9 @@ chisq2D_test_cont=function(dta_x, dta_y, Ranges =matrix(c(-Inf, Inf, -Inf, Inf),
       grd=as.list(1:2)
       for(i in 1:2) { #equal probability grid
         grd[[i]]=quantile(dta_xy[,i], 0:nbins[i]/nbins[i])
-        grd[[i]][c(1,nbins[i]+1)]=c(0,1)
+        grd[[i]][c(1,nbins[i]+1)]=c(low[i], high[i])
       }
-    }  
+    } 
     A_x=0*dta_x
     A_y=0*dta_y
     A_xy=0*dta_xy

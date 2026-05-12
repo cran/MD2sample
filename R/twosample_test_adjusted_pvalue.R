@@ -35,6 +35,7 @@ simpvals=function(dta, TS, typeTS, TSextra, A, Continuous,
                   Ranges, nbins, minexpcount, B) {
   num_tests=length(calcTS(dta, TS, typeTS, TSextra))
   pvalsTS=matrix(0, B, num_tests)
+  Dim=ncol(dta$x)
   if(Continuous) {
        pvalsChi=matrix(0, B, 2)
        colnames(pvalsChi)=c("ES","EP")
@@ -53,7 +54,8 @@ simpvals=function(dta, TS, typeTS, TSextra, A, Continuous,
     tmp=calcTS(simdta, TS, typeTS, TSextra)
     if(Continuous) {
         pvalsOther[i, ]=TS_cont_pval(simdta$x, simdta$y)$p.values 
-        pvalsChi[i, ]=chisq2D_test_cont(simdta$x, simdta$y, Ranges, nbins, minexpcount)$p.values
+        if(Dim==2) 
+           pvalsChi[i, ]=chisq2D_test_cont(simdta$x, simdta$y, Ranges, nbins, minexpcount)$p.values
     }
     else pvalsChi[i, ]=chisq2D_test_disc(simdta, minexpcount)$p.values
     for(j in 1:num_tests) pvalsTS[i,j]=pvalsTS[i,j]+sum(tmp[j]>A[,j])/nrow(A) 
@@ -125,6 +127,7 @@ twosample_test_adjusted_pvalue=function(x, y, vals_x=NA, vals_y=NA,
       else {#Discrete data
         if(!SuppressMessages) message("Data is assumed to be discrete")
         Continuous=FALSE
+        Dim=2
         dta=x
         x=matrix(1:4,2,2)#just some dummy numbers
         y=matrix(1:4,2,2)
@@ -141,6 +144,7 @@ twosample_test_adjusted_pvalue=function(x, y, vals_x=NA, vals_y=NA,
       } 
       else {
         if(!SuppressMessages) message("Data is assumed to be discrete")
+        Dim=2
         dta=list(x=x, y=y, vals_x=vals_x, vals_y=vals_y)
         x=matrix(1:4,2,2)#just some dummy numbers
         y=matrix(1:4,2,2)
@@ -221,7 +225,9 @@ twosample_test_adjusted_pvalue=function(x, y, vals_x=NA, vals_y=NA,
     if(Continuous) {
         pvalsdta=c(pvalsdta, TS_cont_pval(x, y)$p.values) 
         if(length(nbins)==1) nbins=c(nbins, nbins)
-        pvalsdta=c(pvalsdta, chisq2D_test_cont(x, y, Ranges, nbins, minexpcount)$p.values)
+        if(Dim==2) chitmp=chisq2D_test_cont(x, y, Ranges, nbins, minexpcount)$p.values
+        else chitmp=rep(0, 2)
+        pvalsdta=c(pvalsdta, chitmp)
         names(pvalsdta)=all.methods$cont
     }   
     else {
@@ -257,6 +263,10 @@ twosample_test_adjusted_pvalue=function(x, y, vals_x=NA, vals_y=NA,
     if(doMethods[1]=="all"){
       if(Continuous) doMethods=all.methods[["cont"]]
       else doMethods=all.methods[["disc"]]
+    }
+    if(Continuous & Dim>2) {
+      doMethods=doMethods[doMethods!="ES"]
+      doMethods=doMethods[doMethods!="EP"]
     }
     pvals=cbind(pvalsTS, pvalsOther, pvalsChi) 
     pvals=pvals[ ,doMethods,drop=FALSE]

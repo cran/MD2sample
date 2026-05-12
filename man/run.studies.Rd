@@ -56,5 +56,6 @@ For details consult vignette(package="MD2sample")
 #The new test is a (included) chi square test:
 TSextra=list(which="pval", nbins=rbind(c(3,3), c(4,4)))
 run.studies(Continuous=TRUE, study=c("NormalD2", "tD2"), 
-          TS=MD2sample::chiTS.cont, TSextra=TSextra, B=100)
+          TS=MD2sample::chiTS.cont, TSextra=TSextra, 
+          With.p.value=TRUE, B=100)
 }

@@ -156,6 +156,7 @@ twosample_test=function(x, y, vals_x=NA, vals_y=NA, TS, TSextra, B=5000,
       else typeTS=ifelse(length(formals(TS))==5, 6, 5)  
     }
     TS_data=calcTS(dta, TS, typeTS, TSextra)
+    if(B==0) return(TS_data)
     if(any(is.null(names(TS_data)))) {
       if(!SuppressMessages) message("output of TS routine has to be a named vector!")
       return(NULL)

@@ -22,7 +22,8 @@
 #' #The new test is a (included) chi square test:
 #' TSextra=list(which="pval", nbins=rbind(c(3,3), c(4,4)))
 #' run.studies(Continuous=TRUE, study=c("NormalD2", "tD2"), 
-#'           TS=MD2sample::chiTS.cont, TSextra=TSextra, B=100)
+#'           TS=MD2sample::chiTS.cont, TSextra=TSextra, 
+#'           With.p.value=TRUE, B=100)
 #' @export
 run.studies <- function(Continuous=TRUE, study, TS, TSextra, With.p.value=FALSE,  
           nsample=200, alpha=0.05, param_alt, 
