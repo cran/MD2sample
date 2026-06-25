@@ -162,21 +162,21 @@ twosample_power(g, c(0, 0.5), rnull=rnull, B=BP, maxProcessor = 1)
 #             B=1000)
 
 ## ----eval=FALSE---------------------------------------------------------------
-# run.studies(Continuous=TRUE,
-#             study=c("NormalD2", "tD2"),
+# run.studies(study=c("NormalD2", "tD2"),
+#             Continuous=TRUE,
 #             param_alt=cbind(c(0.4, 0.4), c(0.7, 0.7)),
 #             alpha=0.1, B=1000)
 
 ## -----------------------------------------------------------------------------
 TSextra=list(which="pvalue", nbins=cbind(c(3,3), c(4,4)))
-run.studies(Continuous=TRUE, 
-                study=c("NormalD2", "tD2"),
-                TS=chiTS.cont, 
-                TSextra=TSextra,
-                With.p.value = TRUE, 
-                B=500,
-                SuppressMessages = TRUE,
-                maxProcessor=1)
+run.studies(study=c("NormalD2", "tD2"), 
+            Continuous=TRUE, 
+            TS=chiTS.cont, 
+            TSextra=TSextra,
+            With.p.value = TRUE, 
+            B=500,
+            SuppressMessages = TRUE,
+            maxProcessor=1)
 
 ## -----------------------------------------------------------------------------
 f=function(a) {

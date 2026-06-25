@@ -340,22 +340,22 @@ run.studies(Continuous=TRUE,
 
 **Arguments of run.studies**
 
+-  *study* either the name of the study, or its number. If missing all the studies are run.  
 -  *Continuous=TRUE* run cases for continuous data.  
 -  *TS* routine to calculate test statistics.  
--  *study* either the name of the study, or its number. If missing all the studies are run.  
 -  *TSextra* list passed to TS, if any.  
 -  *With.p.value=FALSE* does user supplied routine return p values?  
 -  *nsample=200* desired sample size.  
 -  *alpha=0.05*  type I error.  
--  *param_alt* (list of) values of parameter under the alternative hypothesis. If missing included values are used.  
+-  *param_alt* vector or matrix of values of parameters under the alternative hypothesis. If missing included values are used.  
 -  *SuppressMessages=FALSE* should messages be printed?  
 -  *B = 1000* number of simulation runs.
 
-The data set *power_studies_results* included in MD2sample has the results for the included tests using a sample size of 200, a true type I error probability of 0.05 and two values of the parameter under the alternative, on which makes the null hypothesis true and one which makes it false. If the user wants different numbers he can run:
+The data set *power_studies_results* included in MD2sample has the results for the included tests using a sample size of 200, a true type I error probability of 0.05 and two values of the parameter under the alternative, one which makes the null hypothesis true and one which makes it false. If the user wants different numbers he can run:
 
 ```{r eval=FALSE}
-run.studies(Continuous=TRUE, 
-            study=c("NormalD2", "tD2"), 
+run.studies(study=c("NormalD2", "tD2"), 
+            Continuous=TRUE, 
             param_alt=cbind(c(0.4, 0.4), c(0.7, 0.7)), 
             alpha=0.1, B=1000)
 ```
@@ -366,14 +366,14 @@ Note that the routine should return a **named** vector with the p values.
 
 ```{r}
 TSextra=list(which="pvalue", nbins=cbind(c(3,3), c(4,4)))
-run.studies(Continuous=TRUE, 
-                study=c("NormalD2", "tD2"),
-                TS=chiTS.cont, 
-                TSextra=TSextra,
-                With.p.value = TRUE, 
-                B=500,
-                SuppressMessages = TRUE,
-                maxProcessor=1)
+run.studies(study=c("NormalD2", "tD2"), 
+            Continuous=TRUE, 
+            TS=chiTS.cont, 
+            TSextra=TSextra,
+            With.p.value = TRUE, 
+            B=500,
+            SuppressMessages = TRUE,
+            maxProcessor=1)
 ```
 
 ## Goodness-of-fit / twosample hybrid problem.

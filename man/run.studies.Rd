@@ -5,23 +5,23 @@
 \title{Benchmarking for Multivariate Two-Sample Tests}
 \usage{
 run.studies(
-  Continuous = TRUE,
   study,
+  Continuous = TRUE,
   TS,
   TSextra,
   With.p.value = FALSE,
-  nsample = 200,
   alpha = 0.05,
   param_alt,
+  nsample = c(200, 200),
   SuppressMessages = FALSE,
   B = 1000,
   maxProcessor
 )
 }
 \arguments{
-\item{Continuous}{=TRUE, run cases for continuous data.}
-
 \item{study}{either the name of the study, or its number in the list. If missing all the studies are run.}
+
+\item{Continuous}{=TRUE, run cases for continuous data.}
 
 \item{TS}{routine to calculate new test statistics.}
 
@@ -29,12 +29,12 @@ run.studies(
 
 \item{With.p.value}{=FALSE, does user supplied routine return p values?}
 
-\item{nsample}{= 200, desired sample size. 200 is used in included case studies.}
-
 \item{alpha}{=0.05,  type I error probability of tests. 0.05 is used in included case studies.}
 
-\item{param_alt}{(list of) values of parameter under the alternative hypothesis.
+\item{param_alt}{vector or matrix of values of parameters under the alternative hypothesis.
 If missing included values are used.}
+
+\item{nsample}{=c(200, 200), sample sizes for x and y data sets.}
 
 \item{SuppressMessages}{=FALSE, should informative messages be printed?}
 
@@ -55,7 +55,7 @@ For details consult vignette(package="MD2sample")
 \examples{
 #The new test is a (included) chi square test:
 TSextra=list(which="pval", nbins=rbind(c(3,3), c(4,4)))
-run.studies(Continuous=TRUE, study=c("NormalD2", "tD2"), 
+run.studies(study=c("NormalD2", "tD2"), Continuous=TRUE,  
           TS=MD2sample::chiTS.cont, TSextra=TSextra, 
           With.p.value=TRUE, B=100)
 }

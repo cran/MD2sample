@@ -57,32 +57,39 @@
 #' twosample_power(g, 1.5, 1.6, B=10, maxProcessor=1)
 #' @export 
 twosample_power=function(f, ..., TS, TSextra, alpha=0.05, B=1000, 
-            nbins=c(5,5), minexpcount =5, Ranges=matrix(c(-Inf, Inf, -Inf, Inf),2,2),
-            samplingmethod="Binomial", rnull, With.p.value=FALSE,
-            DoTransform=TRUE, SuppressMessages=FALSE, 
-            LargeSampleOnly=FALSE, maxProcessor, doMethods ="all") {
-    if(!is.numeric(samplingmethod))  
-      samplingmethod=ifelse(samplingmethod=="independence", 1, 2)
-# create function rxy which generates data, with two arguments                       
-    if(length(list(...))==0) { # f has 0 arguments
-       rxy=function(a=0, b=0) f()
-       avals=0
-       bvals=0
-    }
-    if(length(list(...))==1) { # f has 1 argument
-       rxy=function(a=0, b=0) f(a)
-       avals=list(...)[[1]]
-       bvals=0
-    }
-    if(length(list(...))==2) { # f has 2 arguments
-       rxy=function(a=0, b=0) f(a,b)
-       avals=list(...)[[1]]
-       bvals=list(...)[[2]]
-    }
-  # check that avals and bvals have the same length. 
-  # If they do, matrix of powers is returned without row names.
-  # If one of them is a scalar, make it the same length as the other and use those
-  # values as row names
+                         nbins=c(5,5), minexpcount =5, Ranges=matrix(c(-Inf, Inf, -Inf, Inf),2,2),
+                         samplingmethod="Binomial", rnull, With.p.value=FALSE,
+                         DoTransform=TRUE, SuppressMessages=FALSE, 
+                         LargeSampleOnly=FALSE, maxProcessor, doMethods ="all") {
+  
+  # Convert sampling method to internal numeric code.
+  # independence = 1, Binomial = 2.
+  if(!is.numeric(samplingmethod))  
+    samplingmethod=ifelse(samplingmethod=="independence", 1, 2)
+  
+  # Create a wrapper rxy(a,b) around the user-supplied generator f().
+  # This standardizes f so later code can always call it with two arguments.
+  ldots <- list(...)
+  nldots <- length(ldots)
+  if(nldots==0) {
+    rxy=function(a=0, b=0) f()
+    avals=0
+    bvals=0
+  }
+  if(nldots==1) {
+    rxy=function(a=0, b=0) f(a)
+    avals=ldots[[1]]
+    bvals=0
+  }
+  if(nldots==2) {
+    rxy=function(a=0, b=0) f(a,b)
+    avals=ldots[[1]]
+    bvals=ldots[[2]]
+  }
+  
+  # Check parameter-vector lengths.
+  # If one vector is scalar, recycle it to match the other.
+  # If both have length > 1 but different lengths, stop.
   if(length(avals)!=length(bvals)) {
     if(min(c(length(avals),length(bvals)))>1) {
       if(!SuppressMessages) message("lengths of parameter vectors not compatible!\n")
@@ -93,120 +100,173 @@ twosample_power=function(f, ..., TS, TSextra, alpha=0.05, B=1000,
     }    
     else bvals=rep(bvals, length(avals))
   }    
-# generate one data set as an example, do some setup 
+  
+  # Generate one example data set to determine the data type
+  # and initialize dimensions/settings.
   dta = rxy(avals[1], bvals[1])
   Continuous=TRUE
-  if(is.matrix(dta)) { #Discrete Data
+  
+  if(is.matrix(dta)) {
+    # Matrix output is interpreted as discrete data.
+    # Expected columns: vals_x, vals_y, x counts, y counts.
     dta=list(x=dta[,3], y=dta[,4], vals_x=dta[,1], vals_y=dta[,2])
-    x=matrix(1:4,2,2) #just some dummy numbers
+    
+    # Dummy matrices used only for compatibility with later references.
+    x=matrix(1:4,2,2)
     y=matrix(1:4,2,2)
+    
     Continuous=FALSE
     DoTransform=FALSE
   }
+  
+  # Verify that requested methods are valid for this data type.
   if(test_methods(doMethods, Continuous)) return(NULL)
+  
   if(Continuous) {
     x=dta$x
     y=dta$y
-    Dim=ncol(x) # dimension of data
+    Dim=ncol(x)
+    
+    # This routine requires nrow(x) <= nrow(y).
     if(nrow(y)<nrow(x)) { 
       if(!SuppressMessages) message("sample size of x should not be larger than sample size of y")
       return(NULL)
     }
   }  
+  
+  # Optionally transform continuous data to the unit hypercube.
   if(DoTransform) {
     dta=transform01(dta)
     x=dta$x
     y=dta$y
     Ranges=matrix(c(0, 1, 0, 1),2,2)
   }
+  
+  # Initialize optional extra arguments for test statistic routines.
   if(missing(TSextra)) TSextra=list(aaa=0)
+  
+  # Add helper functions and precomputed quantities for continuous data.
   if(Continuous)
-     TSextra = c(TSextra, 
-               knn=function(x) FNN::get.knn(x, 5)$nn.index,
-               dist=function(dta) find_dist(dta),
-               distances=list(find_dist(list(x=x,y=y))),
-               DoTransform=DoTransform,
-               ParametricBootstrap=FALSE)
-  else TSextra = c(TSextra, 
-               dist=function(dta) NULL,
-               organize=function(dta) dta=dta[order(dta[,1], dta[,2]), ],
-               samplingmethod=samplingmethod,
-               ParametricBootstrap=FALSE)
+    TSextra = c(TSextra, 
+                knn=function(x) FNN::get.knn(x, 5)$nn.index,
+                dist=function(dta) find_dist(dta),
+                distances=list(find_dist(list(x=x,y=y))),
+                DoTransform=DoTransform,
+                ParametricBootstrap=FALSE)
+  else 
+    # Add helper functions and settings for discrete data.
+    TSextra = c(TSextra, 
+                dist=function(dta) NULL,
+                organize=function(dta) dta=dta[order(dta[,1], dta[,2]), ],
+                samplingmethod=samplingmethod,
+                ParametricBootstrap=FALSE)
+  
+  # If a null generator is provided, use parametric bootstrap.
   if(!missing(rnull)) {
-     TSextra$ParametricBootstrap=TRUE
-     TSextra=c(TSextra, rnull=rnull, rawdta=list(dta))
+    TSextra$ParametricBootstrap=TRUE
+    TSextra=c(TSextra, rnull=rnull, rawdta=list(dta))
   }   
-  pwrchi=NULL # no chi square test
-  if(missing(TS)) { # do included methods
+  
+  # Placeholder for chi-square or other large-sample power results.
+  pwrchi=NULL
+  
+  # Select built-in or user-supplied test statistic.
+  if(missing(TS)) {
     CustomTS=FALSE
-    if(Continuous) { # Continuous Data
-        typeTS=1
-        TS=TS_cont
+    
+    if(Continuous) {
+      typeTS=1
+      TS=TS_cont
     }
-    else { # Discrete Data
-        typeTS=4
-        TS=TS_disc
+    else {
+      typeTS=4
+      TS=TS_disc
     }  
   }
-  else { # do user-supplied tests
+  else {
     CustomTS=TRUE
+    
+    # Determine calling convention from number of formal arguments.
     if(Continuous) typeTS=length(formals(TS))
     else typeTS=ifelse(length(formals(TS))==5, 6, 5)
   }
+  
+  # Compute one observed statistic to validate output and get method names.
   TS_data=calcTS(dta, TS, typeTS, TSextra)
+  
   if(is.null(names(TS_data))) {
     if(!SuppressMessages) message("output of TS routine has to be a named vector!")
     return(NULL)
   }  
+  
   methodnames=names(TS_data)
   
-# Do a time check for power
+  # Decide whether parallel computation is worthwhile.
+  # With.p.value uses a different routine and is forced to one processor.
   if(With.p.value) maxProcessor=1
+  
   if(missing(maxProcessor)) {
     ncores=max(parallel::detectCores(logical=FALSE)-1,1)
     tm=timecheck(dta, TS, typeTS, TSextra)
+    
+    # Ensure timing vector has two components.
     if(length(tm)==1) tm=c(tm,0)
+    
+    # Estimate total runtime for simulation-based and p-value-based parts.
     totaltime=2*tm*length(avals)*B
+    
     if(max(totaltime)<20 | B<=2*ncores) 
-       if(!SuppressMessages) message("maxProcessor set to 1 for faster computation")
+      if(!SuppressMessages) message("maxProcessor set to 1 for faster computation")
     else if(!SuppressMessages) message(paste("Using ", ncores," cores..")) 
+    
     maxProcessor1=1
-    if(totaltime[1]>20 & B>2*ncores) 
-       maxProcessor1=ncores
+    if(totaltime[1]>20 && B>2*ncores) 
+      maxProcessor1=ncores
+    
     maxProcessor2=1
-    if(typeTS==1 & totaltime[2]>20 & B>2*ncores) 
-       maxProcessor2=ncores
-    if(max(totaltime)>20 & B>2*ncores) {
-       if(maxProcessor1==1 & maxProcessor2>1)
-          totaltime=30+totaltime[2]/maxProcessor2
-       if(maxProcessor1>1 & maxProcessor2==1)
-          totaltime=30+totaltime[1]/maxProcessor1
-       if(maxProcessor1>1 & maxProcessor2>1)
-          totaltime=50+sum(totaltime)/maxProcessor1
-       totaltime=round(totaltime,-1)
-       timeunit="seconds"
-       if(max(totaltime)>60) {
-         totaltime=round(totaltime/60,1)
-         timeunit="minutes"
-       }
-       if(!SuppressMessages) message(paste("estimated time:", totaltime , timeunit))
+    if(typeTS==1 && totaltime[2]>20 && B>2*ncores) 
+      maxProcessor2=ncores
+    
+    # Print estimated total time when parallel computation is used.
+    if(max(totaltime)>20 && B>2*ncores) {
+      if(maxProcessor1==1 && maxProcessor2>1)
+        totaltime=30+totaltime[2]/maxProcessor2
+      if(maxProcessor1>1 && maxProcessor2==1)
+        totaltime=30+totaltime[1]/maxProcessor1
+      if(maxProcessor1>1 && maxProcessor2>1)
+        totaltime=50+sum(totaltime)/maxProcessor1
+      
+      totaltime=round(totaltime,-1)
+      timeunit="seconds"
+      
+      if(max(totaltime)>60) {
+        totaltime=round(totaltime/60,1)
+        timeunit="minutes"
+      }
+      
+      if(!SuppressMessages) message(paste("estimated time:", totaltime , timeunit))
     }
   }  
   else {
+    # User explicitly supplied number of processors.
     maxProcessor1=maxProcessor
     maxProcessor2=maxProcessor
   }
-# Run power routine for new test which returns p value(s)
+  
+  # If requested, estimate power directly from returned p-values.
   if(With.p.value) {
     pwr=power_pvals(rxy, avals, bvals, TS=TS, typeTS, TSextra, alpha=alpha, B=B)
-    if(length(list(...))==0) rownames(pwr)=NULL
-    if(length(list(...))==1) rownames(pwr)=avals
-    if(length(list(...))==2) rownames(pwr)=paste0(avals,"|",bvals)  
+    
+    if(nldots==0) rownames(pwr)=NULL
+    if(nldots==1) rownames(pwr)=avals
+    if(nldots==2) rownames(pwr)=paste0(avals,"|",bvals)  
+    
     if(doMethods[1]!="all") pwr=pwr[, doMethods, drop=FALSE]
+    
     return(round(pwr, 4))
   }
-
-# Run power routines for continuous data
+  
+  # Estimate power using simulated null critical values.
   if(!LargeSampleOnly) {
     if(maxProcessor1==1) {
       tmp=powerC(rxy, avals, bvals, TS, typeTS, TSextra, B)
@@ -215,58 +275,87 @@ twosample_power=function(f, ..., TS, TSextra, alpha=0.05, B=1000,
       paramalt=tmp$paramalt
     }    
     else {
+      # Parallel simulation for empirical critical values.
       cl=parallel::makeCluster(maxProcessor1)
+      on.exit(parallel::stopCluster(cl), add=TRUE)
       z=parallel::clusterCall(cl, powerC, 
                               rxy,  avals, bvals,
                               TS, typeTS, TSextra, round(B[1]/maxProcessor1))
+      
       parallel::stopCluster(cl)
+      
+      # Combine results from all workers.
       Simulated=z[[1]][["Simulated"]]
       Data=z[[1]][["Data"]]
       paramalt=z[[1]][["paramalt"]]
+      
       for(i in 2:maxProcessor1) {
         Simulated=rbind(Simulated, z[[i]][["Simulated"]])
         Data=rbind(Data, z[[i]][["Data"]])
         paramalt=rbind(paramalt,z[[i]][["paramalt"]])
       }  
     }
+    
+    # Compute empirical power for each parameter setting and method.
     pwr=matrix(0, length(avals), length(TS_data))
     colnames(pwr)=names(TS_data)
+    
     for(i in seq_along(avals)) {
       Index=c(1:nrow(Data))[paramalt[,1]==avals[i]&paramalt[,2]==bvals[i]]
+      
       tmpD=Data[Index, , drop=FALSE]
       tmpS=Simulated[Index, , drop=FALSE]
+      
+      # Critical value is the 1-alpha null quantile.
       crtval=apply(tmpS, 2, quantile, prob=1-alpha, na.rm=TRUE)
+      
+      # Power is the proportion of alternative statistics exceeding
+      # the simulated critical value.
       for(j in seq_along(crtval)) 
         pwr[i, j]=sum(tmpD[ ,j]>crtval[j])/nrow(tmpD)
     }
   }  
+  
+  # Compute power for methods that return p-values directly,
+  # such as large-sample or chi-square methods.
   pwrothers=NULL
+  
   if(missing(rnull) & (typeTS %in% c(1, 4))) {
-     if(maxProcessor2==1) {
-          pwrothers=power_pvals(rxy, avals, bvals,  
-                              TS=TS, typeTS=typeTS, TSextra=TSextra,
-                              nbins=nbins, minexpcount=minexpcount, 
-                              Ranges=Ranges, alpha=alpha, B=B)
-      }  
-      else { 
-         cl <- parallel::makeCluster(maxProcessor2)
-         u = parallel::clusterCall(cl, power_pvals, 
-            rxy, avals, bvals,
-            TS=TS, typeTS=typeTS, TSextra=TSextra,
-            nbins=nbins, minexpcount=minexpcount, Ranges=Ranges,
-            alpha=alpha, B=round(B/maxProcessor2))
-        parallel::stopCluster(cl)  
-        # Average power over cores  
-        pwrothers=u[[1]]
-        for(i in 2:maxProcessor2) pwrothers=pwrothers+u[[i]]
-        pwrothers = pwrothers/maxProcessor2
-      }
+    if(maxProcessor2==1) {
+      pwrothers=power_pvals(rxy, avals, bvals,  
+                            TS=TS, typeTS=typeTS, TSextra=TSextra,
+                            nbins=nbins, minexpcount=minexpcount, 
+                            Ranges=Ranges, alpha=alpha, B=B)
+    }  
+    else { 
+      # Parallel power calculation for p-value-based methods.
+      cl <- parallel::makeCluster(maxProcessor2)
+      on.exit(parallel::stopCluster(cl), add=TRUE)
+      u = parallel::clusterCall(cl, power_pvals, 
+                                rxy, avals, bvals,
+                                TS=TS, typeTS=typeTS, TSextra=TSextra,
+                                nbins=nbins, minexpcount=minexpcount, Ranges=Ranges,
+                                alpha=alpha, B=round(B/maxProcessor2))
+      
+      # Average power estimates over workers.
+      pwrothers=u[[1]]
+      for(i in 2:maxProcessor2) pwrothers=pwrothers+u[[i]]
+      pwrothers = pwrothers/maxProcessor2
+    }
   }
+  
+  # Combine simulation-based and p-value-based power estimates.
   if(LargeSampleOnly) pwr=pwrothers
   else if(!CustomTS) pwr = cbind(pwr, pwrothers)
-  if(length(list(...))==0) rownames(pwr)=NULL
-  if(length(list(...))==1) rownames(pwr)=avals
-  if(length(list(...))==2) rownames(pwr)=paste0(avals,"|",bvals)
+  
+  # Assign row names based on the number of tuning parameters supplied.
+  if(nldots==0) rownames(pwr)=NULL
+  if(nldots==1) rownames(pwr)=avals
+  if(nldots==2) rownames(pwr)=paste0(avals,"|",bvals)
+  
+  # Keep only requested methods.
   if(doMethods[1]!="all") pwr=pwr[, doMethods, drop=FALSE]
+  
+  # Return rounded power estimates.
   round(pwr, 4)
 }
