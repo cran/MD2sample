@@ -2,7 +2,8 @@
 #' @param  x a list of two vectors
 #' @param  d =4 number of digits to round to
 #' @return A list with rounded vectors
-signif.digits=function(x, d=4) {
+#' @export
+signif_digits=function(x, d=4) {
    stat=x$statistics
    pval=x$p.values
    pval=round(pval, 4)

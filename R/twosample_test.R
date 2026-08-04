@@ -302,7 +302,7 @@ twosample_test = function(x, y, vals_x=NA, vals_y=NA, TS, TSextra, B=5000,
   }
   
   # If the user supplied a custom test statistic, return only those results.
-  if(CustomTS) return(signif.digits(outTS))
+  if(CustomTS) return(signif_digits(outTS))
   
   # Combine simulation-based, analytic, and chi-square results.
   s = c(outTS$statistics, outpvals$statistics, outchi$statistic)
@@ -315,7 +315,7 @@ twosample_test = function(x, y, vals_x=NA, vals_y=NA, TS, TSextra, B=5000,
   }  
   
   # Return rounded/significant-digit formatted results.
-  signif.digits(list(statistics=s, p.values=p))
+  signif_digits(list(statistics=s, p.values=p))
 }
 
 

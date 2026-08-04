@@ -1,0 +1,107 @@
+---
+title: "Tests for MD2sample"
+author: "Wolfgang Rolke"
+date: "2025-03-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, 
+                      error=TRUE)
+library(MD2sample)
+st=function() knitr::knit_exit()
+B=10
+ev=c(1,1,1,1,1,1,1,1,1)
+ev=ifelse(ev==1, TRUE, FALSE)
+names(ev) = c("CT", "CP", "CPTS", 
+              "DT", "DP",  "DPTS",
+                "RunST1", "RunST2", "RunST3")
+```
+
+# Continuous Data
+
+## Testing
+
+```{r}
+f=case.studies(1)$f
+dta1=f(0)
+dta2=f(0.5)
+
+```
+
+```{r CT, eval=ev["CT"]}
+twosample_test(dta1, B=B)$p.values
+twosample_test(dta2, B=B)$p.values
+TSextra=list(which="statistics", nbins=rbind(c(3,3), c(4,4)))
+twosample_test(dta1, TS=MD2sample::chiTS.cont, TSextra=TSextra, B=B)$p.values
+twosample_test_adjusted_pvalue(dta1,B=10, maxProcessor = 1)
+twosample_test_adjusted_pvalue(dta2,B=10, maxProcessor = 1)
+```
+
+## Power
+
+```{r CPwE, eval=ev["CP"]}
+twosample_power(f, c(0,0.5), B=B)
+```
+
+```{r CPTS1, eval=ev["CPTS"]}
+TSextra=list(which="statistic", nbins=c(3,3))
+twosample_power(f, c(0, 0.5), TS=chiTS.cont, TSextra=TSextra, B=B)
+TSextra=list(which="pvalue", nbins=c(3,3))
+twosample_power(f, c(0, 0.5), TS=chiTS.cont, TSextra=TSextra, B=B, With.p.value=TRUE)
+```
+
+# Discrete Data
+
+## New Routines
+
+## Testing
+
+```{r}
+f=case.studies(1, nbins=c(5,5))$f
+dta1=f(0)
+dta2=f(0.5)
+```
+
+```{r DT, eval=ev["DT"]}
+twosample_test(dta1, B=B)$p.values
+twosample_test(dta2, B=B)$p.values
+TSextra=list(which="statistic")
+twosample_test(dta1, TS=MD2sample::chiTS.disc, TSextra=TSextra, B=B)$p.values
+twosample_test_adjusted_pvalue(dta1,B=10, maxProcessor = 1)
+```
+
+## Power
+
+```{r DPwE, eval=ev["DP"]}
+twosample_power(f, c(0,0.5),  B=B)
+TSextra=list(which="statistic")
+twosample_power(f, c(0,0.5), TS=chiTS.disc, TSextra=TSextra, B=B)
+TSextra=list(which="pvalue")
+twosample_power(f, c(0,0.5), TS=chiTS.disc, TSextra=TSextra, B=B, With.p.value=TRUE)
+```
+
+
+# Run Studies
+
+```{r}
+cases=MD2sample::case.studies(ReturnCaseNames = TRUE)
+```
+
+```{r eval=ev["RunST1"]}
+run.studies(Continuous,TS1, "NormalD2", B=10)
+if(Continuous) run.studies(Continuous,TS2, c("NormalD2", "tD2"), With.p.value=TRUE, B=10)
+```
+
+```{r eval=ev["RunST2"]}
+run.studies(Continuous, TS1, "NormalD2", param_alt=0.8, alpha=0.1, nsample=100, B=10)
+if(Continuous)
+   run.studies(Continuous, TS2, c("NormalD2", "tD2"), param_alt=list(c(0,0.8),c(0,0.8)),
+            With.p.value=TRUE, alpha=0.1, nsample=100, B=10)
+```
+
+```{r eval=ev["RunST3"]}
+p=readRDS("power_studies_results.RDS")[[3]]
+run.studies(Continuous, param_alt=p, 
+            alpha=0.1, B=10, maxProcessor = 1)
+```

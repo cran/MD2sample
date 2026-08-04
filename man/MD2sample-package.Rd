@@ -11,5 +11,10 @@ The routine twosample_test() in this package runs the two-sample test using vari
 \author{
 \strong{Maintainer}: Wolfgang Rolke \email{wolfgang.rolke@upr.edu} (\href{https://orcid.org/0000-0002-3514-726X}{ORCID})
 
+Authors:
+\itemize{
+  \item Wolfgang Rolke \email{wolfgang.rolke@upr.edu} (\href{https://orcid.org/0000-0002-3514-726X}{ORCID})
+}
+
 }
 \keyword{internal}

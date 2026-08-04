@@ -1,3 +1,10 @@
+# MD2sample 1.3.0 August 2, 2026
+      Added testthat suite
+      Some minor bug fixes
+# MD2sample 1.2.2 June 24, 2026
+      Some minor bug fixes
+
+
 # MD2sample 1.2.2 June 24, 2026
       Some minor bug fixes
       
