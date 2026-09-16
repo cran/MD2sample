@@ -411,19 +411,30 @@ test:</p>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>y1 <span class="ot">=</span> mvtnorm<span class="sc">::</span><span class="fu">rmvnorm</span>(<span class="dv">120</span>, <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>))</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">twosample_test</span>(x1, y1, <span class="at">B=</span>BT, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Data is assumed to be continuous</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; $statistics</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;        KS         K       CvM        AD       NN1       NN5        AZ        BF </span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;  0.108300  0.176600  0.075930  0.562000  1.108300  2.036700  0.006952  0.250400 </span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt;        BG       MMD        FR       NN0       CF1       CF2       CF3       CF4 </span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;  0.763600  0.020930 -1.102000  0.227200 -1.102000  1.441500  1.127300  1.285200 </span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;      Ball        ES        EP </span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;  0.006210 15.452000 32.531000 </span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; $p.values</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;     KS      K    CvM     AD    NN1    NN5     AZ     BF     BG    MMD     FR </span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; 0.7800 0.7700 0.7300 0.8800 0.1300 0.3600 0.5000 0.5700 0.3600 0.3400 0.1353 </span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;    NN0    CF1    CF2    CF3    CF4   Ball     ES     EP </span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; 0.1555 0.1353 0.4864 0.1298 0.3027 0.3761 0.3479 0.1144</span></span></code></pre></div>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; MD2sample two-sample tests</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; Data: continuous  | n.x = 100  | n.y = 120  | dimension = 2  | B = 100 </span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;  method statistic p.value</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;      KS  0.108300  0.7800</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;       K  0.176600  0.7700</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;     CvM  0.075930  0.7300</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;      AD  0.562000  0.8800</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;     NN1  1.108300  0.1300</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt;     NN5  2.036700  0.3600</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;      AZ  0.006952  0.5000</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;      BF  0.250400  0.5700</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;      BG  0.763600  0.3600</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;     MMD  0.020930  0.3400</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt;      FR -1.102000  0.1353</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt;     NN0  0.227200  0.1555</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt;     CF1 -1.102000  0.1353</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt;     CF2  1.441500  0.4864</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt;     CF3  1.127300  0.1298</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt;     CF4  1.285200  0.3027</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt;    Ball  0.006210  0.3761</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt;      ES 15.452000  0.3479</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt;      EP 32.531000  0.1144</span></span></code></pre></div>
 <p><strong>Arguments of twosample_test</strong></p>
 <ul>
 <li><em>x</em> a matrix of numbers with different observations in
@@ -478,13 +489,13 @@ then 3 and 4 bins.</li>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">twosample_test</span>(x1, y1, <span class="at">TS=</span>chiTS.cont, <span class="at">TSextra=</span>TSextra, </span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>               <span class="at">B=</span>BT, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; Data is assumed to be continuous</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; $statistics</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; Chisq Stat 3,3 Chisq Stat 3,4 </span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;         4.2376        16.3280 </span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; MD2sample two-sample tests</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; Data: continuous  | n.x = 100  | n.y = 120  | dimension = 2  | B = 100 </span></span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; $p.values</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; Chisq Stat 3,3 Chisq Stat 3,4 </span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt;           0.82           0.12</span></span></code></pre></div>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt;          method statistic p.value</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt;  Chisq Stat 3,3    4.2376    0.82</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt;  Chisq Stat 3,4   16.3280    0.12</span></span></code></pre></div>
 <p><strong>Arguments and output of new test routine for continuous
 data</strong></p>
 <p>The arguments have to be x and y for the two data sets and
@@ -503,12 +514,14 @@ adjusted for simultaneous testing:</p>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>                               <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; Data is assumed to be continuous</span></span>
 <span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; p values of individual tests:</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; ES :  0.3027</span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; CvM :  0.79</span></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; AZ :  0.41</span></span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; NN5 :  0.35</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; BG :  0.31</span></span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; adjusted p value of combined tests: 0.84</span></span></code></pre></div>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; ES: 0.3479</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; CvM: 0.79</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; AZ: 0.41</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; NN5: 0.35</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; BG: 0.31</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; adjusted p value of combined tests: 0.84</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;        ES       CvM        AZ       NN5        BG     Min p </span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; 0.3479407 0.7900000 0.4100000 0.3500000 0.3100000 0.8400000</span></span></code></pre></div>
 </div>
 <div id="power-estimation" class="section level3">
 <h3>Power Estimation</h3>
@@ -623,13 +636,19 @@ dimensions.</p>
 <span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>}</span>
 <span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="fu">twosample_test</span>(x2, <span class="at">B=</span>BT, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
 <span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co">#&gt; Data is assumed to be discrete</span></span>
-<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt; $statistics</span></span>
-<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt;        KS         K       CvM        AD        NN        AZ        BF ChiSquare </span></span>
-<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt;   0.03666   0.05816   0.12590   0.83510   4.12430   0.03132   0.04248  36.42000 </span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt; MD2sample two-sample tests</span></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt; Data: discrete  | n.x = 1000  | n.y = 1200  | dimension = 2  | B = 100 </span></span>
 <span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="co">#&gt; $p.values</span></span>
-<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a><span class="co">#&gt;        KS         K       CvM        AD        NN        AZ        BF ChiSquare </span></span>
-<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="co">#&gt;    0.3200    0.2400    0.4700    0.4800    0.1600    0.4600    0.5300    0.4025</span></span></code></pre></div>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="co">#&gt;     method statistic p.value</span></span>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a><span class="co">#&gt;         KS   0.03666  0.3200</span></span>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="co">#&gt;          K   0.05816  0.2400</span></span>
+<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a><span class="co">#&gt;        CvM   0.12590  0.4700</span></span>
+<span id="cb12-27"><a href="#cb12-27" tabindex="-1"></a><span class="co">#&gt;         AD   0.83510  0.4800</span></span>
+<span id="cb12-28"><a href="#cb12-28" tabindex="-1"></a><span class="co">#&gt;         NN   4.12430  0.1600</span></span>
+<span id="cb12-29"><a href="#cb12-29" tabindex="-1"></a><span class="co">#&gt;         AZ   0.03132  0.4600</span></span>
+<span id="cb12-30"><a href="#cb12-30" tabindex="-1"></a><span class="co">#&gt;         BF   0.04248  0.5300</span></span>
+<span id="cb12-31"><a href="#cb12-31" tabindex="-1"></a><span class="co">#&gt;  ChiSquare  36.42000  0.4025</span></span></code></pre></div>
 <p><strong>Arguments of twosample_test</strong></p>
 <p>As in the case of continuous data the arguments include <em>TS</em>,
 <em>TSextra</em>, <em>minexpcount</em>, <em>rnull</em>,
@@ -656,11 +675,13 @@ also much slower.</li>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">twosample_test_adjusted_pvalue</span>(x2, <span class="at">B=</span><span class="fu">c</span>(BT, BT), <span class="at">maxProcessor=</span><span class="dv">1</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; Data is assumed to be discrete</span></span>
 <span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; p values of individual tests:</span></span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; Chisquare :  0.4025</span></span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; KS :  0.37</span></span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; AZ :  0.51</span></span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; CvM :  0.54</span></span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; adjusted p value of combined tests: 0.7926</span></span></code></pre></div>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; ChiSquare: 0.4025</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; KS: 0.37</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; AZ: 0.51</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; CvM: 0.54</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; adjusted p value of combined tests: 0.81</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; ChiSquare        KS        AZ       CvM     Min p </span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; 0.4024747 0.3700000 0.5100000 0.5400000 0.8100000</span></span></code></pre></div>
 </div>
 <div id="user-supplied-tests" class="section level3">
 <h3>User supplied tests</h3>
@@ -670,13 +691,12 @@ chi-square test for discrete data:</p>
 <span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">twosample_test</span>(x2, <span class="at">TS=</span>chiTS.disc, <span class="at">TSextra=</span>TSextra,</span>
 <span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>               <span class="at">B=</span>BT, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
 <span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; Data is assumed to be discrete</span></span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; $statistics</span></span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; Chisq Stat </span></span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt;     38.014 </span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; MD2sample two-sample tests</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; Data: discrete  | n.x = 1000  | n.y = 1200  | dimension = 2  | B = 100 </span></span>
 <span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; $p.values</span></span>
-<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; Chisq Stat </span></span>
-<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt;       0.67</span></span></code></pre></div>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt;      method statistic p.value</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt;  Chisq Stat    38.014    0.67</span></span></code></pre></div>
 </div>
 <div id="power-estimation-1" class="section level3">
 <h3>Power Estimation</h3>
@@ -765,52 +785,22 @@ run.</p>
 <span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>mt<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;KS&quot;</span>, <span class="st">&quot;K&quot;</span>, <span class="st">&quot;CvM&quot;</span>, <span class="st">&quot;AD&quot;</span>, <span class="st">&quot;NN1&quot;</span>, <span class="st">&quot;NN5&quot;</span>, <span class="st">&quot;AZ&quot;</span>, <span class="st">&quot;BF&quot;</span>, <span class="st">&quot;BG&quot;</span>, <span class="st">&quot;MMD&quot;</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co"># Null hypothesis is true:</span></span>
 <span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="fu">twosample_power</span>(f, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">doMethods =</span> mt, <span class="at">B=</span>BP, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt; MMD is not an included method for continuous data!</span></span>
-<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; For continuous data included methods are</span></span>
-<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; Method               Code</span></span>
-<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt; Kolmogorov-Smirnov   KS</span></span>
-<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co">#&gt; Kuiper               K</span></span>
-<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt; Cramer-vonMises      CvM</span></span>
-<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; Anderson-Darling     AD</span></span>
-<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co">#&gt; 1-nearest neighbor   NN1</span></span>
-<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="co">#&gt; 5-nearest neighbor   NN5</span></span>
-<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co">#&gt; Aslan-Zech           AZ</span></span>
-<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="co">#&gt; Baringhaus-Franz     BF</span></span>
-<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a><span class="co">#&gt; Biswas-Ghosh         BG</span></span>
-<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a><span class="co">#&gt; Friedman-Rafski      FR</span></span>
-<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a><span class="co">#&gt; x nearest neighbor   NN0</span></span>
-<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a><span class="co">#&gt; Chen-Friedman        CF1-CF4</span></span>
-<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a><span class="co">#&gt; Ball Divergence      Ball</span></span>
-<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a><span class="co">#&gt; Chi square tests     ES, EP</span></span>
-<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
-<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a><span class="fu">twosample_power</span>(f, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">rnull=</span>rnull, <span class="at">B=</span>BP, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
-<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a><span class="co">#&gt;     KS    K  CvM   AD  NN1  NN5   AZ   BF   BG  MMD</span></span>
-<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a><span class="co">#&gt; 0 0.06 0.04 0.06 0.04 0.08 0.04 0.14 0.04 0.06 0.12</span></span>
-<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a><span class="co">#&gt; 1 0.02 0.02 0.02 0.00 0.04 0.02 0.06 0.02 0.02 0.06</span></span>
-<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a><span class="co"># Null hypothesis is false:</span></span>
-<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a><span class="fu">twosample_power</span>(g, <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">doMethods =</span> mt, <span class="at">B=</span>BP, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
-<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a><span class="co">#&gt; MMD is not an included method for continuous data!</span></span>
-<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a><span class="co">#&gt; For continuous data included methods are</span></span>
-<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a><span class="co">#&gt; Method               Code</span></span>
-<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a><span class="co">#&gt; Kolmogorov-Smirnov   KS</span></span>
-<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a><span class="co">#&gt; Kuiper               K</span></span>
-<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a><span class="co">#&gt; Cramer-vonMises      CvM</span></span>
-<span id="cb19-35"><a href="#cb19-35" tabindex="-1"></a><span class="co">#&gt; Anderson-Darling     AD</span></span>
-<span id="cb19-36"><a href="#cb19-36" tabindex="-1"></a><span class="co">#&gt; 1-nearest neighbor   NN1</span></span>
-<span id="cb19-37"><a href="#cb19-37" tabindex="-1"></a><span class="co">#&gt; 5-nearest neighbor   NN5</span></span>
-<span id="cb19-38"><a href="#cb19-38" tabindex="-1"></a><span class="co">#&gt; Aslan-Zech           AZ</span></span>
-<span id="cb19-39"><a href="#cb19-39" tabindex="-1"></a><span class="co">#&gt; Baringhaus-Franz     BF</span></span>
-<span id="cb19-40"><a href="#cb19-40" tabindex="-1"></a><span class="co">#&gt; Biswas-Ghosh         BG</span></span>
-<span id="cb19-41"><a href="#cb19-41" tabindex="-1"></a><span class="co">#&gt; Friedman-Rafski      FR</span></span>
-<span id="cb19-42"><a href="#cb19-42" tabindex="-1"></a><span class="co">#&gt; x nearest neighbor   NN0</span></span>
-<span id="cb19-43"><a href="#cb19-43" tabindex="-1"></a><span class="co">#&gt; Chen-Friedman        CF1-CF4</span></span>
-<span id="cb19-44"><a href="#cb19-44" tabindex="-1"></a><span class="co">#&gt; Ball Divergence      Ball</span></span>
-<span id="cb19-45"><a href="#cb19-45" tabindex="-1"></a><span class="co">#&gt; Chi square tests     ES, EP</span></span>
-<span id="cb19-46"><a href="#cb19-46" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
-<span id="cb19-47"><a href="#cb19-47" tabindex="-1"></a><span class="fu">twosample_power</span>(g, <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">rnull=</span>rnull, <span class="at">B=</span>BP, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
-<span id="cb19-48"><a href="#cb19-48" tabindex="-1"></a><span class="co">#&gt;       KS    K  CvM   AD  NN1  NN5   AZ   BF   BG  MMD</span></span>
-<span id="cb19-49"><a href="#cb19-49" tabindex="-1"></a><span class="co">#&gt; 0   0.18 0.02 0.18 0.10 0.06 0.10 0.04 0.04 0.04 0.04</span></span>
-<span id="cb19-50"><a href="#cb19-50" tabindex="-1"></a><span class="co">#&gt; 0.5 0.90 0.98 0.78 0.74 0.48 0.76 1.00 1.00 1.00 1.00</span></span></code></pre></div>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt;     KS    K  CvM   AD  NN1  NN5   AZ   BF   BG  MMD</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; 0 0.02 0.00 0.02 0.02 0.04 0.04 0.02 0.00 0.16 0.04</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; 1 0.00 0.04 0.00 0.02 0.12 0.08 0.02 0.02 0.16 0.04</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="fu">twosample_power</span>(f, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">rnull=</span>rnull, <span class="at">B=</span>BP, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co">#&gt;     KS    K  CvM   AD  NN1  NN5   AZ   BF   BG  MMD</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt; 0 0.14 0.06 0.12 0.12 0.04 0.08 0.06 0.04 0.02 0.06</span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; 1 0.04 0.08 0.08 0.06 0.02 0.06 0.12 0.12 0.04 0.06</span></span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co"># Null hypothesis is false:</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="fu">twosample_power</span>(g, <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">doMethods =</span> mt, <span class="at">B=</span>BP, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co">#&gt;       KS    K  CvM   AD  NN1 NN5   AZ   BF   BG  MMD</span></span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="co">#&gt; 0   0.02 0.04 0.02 0.04 0.02 0.0 0.02 0.02 0.04 0.04</span></span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a><span class="co">#&gt; 0.5 0.60 0.94 0.44 0.46 0.64 0.8 1.00 0.92 0.98 1.00</span></span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a><span class="fu">twosample_power</span>(g, <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">rnull=</span>rnull, <span class="at">B=</span>BP, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a><span class="co">#&gt;       KS    K  CvM  AD  NN1  NN5   AZ   BF  BG  MMD</span></span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a><span class="co">#&gt; 0   0.02 0.04 0.10 0.1 0.12 0.08 0.08 0.08 0.1 0.06</span></span>
+<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a><span class="co">#&gt; 0.5 0.74 1.00 0.74 0.8 0.66 0.92 1.00 1.00 1.0 1.00</span></span></code></pre></div>
 <p>As we can see, the true type I error using the permutation method is
 much smaller than the nominal <span class="math inline">\(\alpha=0.05\)</span>, and so the power is lower as
 well.</p>
@@ -889,8 +879,8 @@ with the p values.</p>
 <span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a><span class="co">#&gt; Chisq Pval 3,4 </span></span>
 <span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a><span class="co">#&gt;           20.5</span></span>
 <span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a><span class="co">#&gt;          Chisq Pval 3,4 Chisq Pval 3,4     KS      K    CvM     AD    NN1</span></span>
-<span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a><span class="co">#&gt; NormalD2          0.998          0.998 0.4277 0.4307 0.5571 0.6714 0.4560</span></span>
-<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a><span class="co">#&gt; tD2               0.970          0.970 0.4398 0.4843 0.5612 0.6249 0.4408</span></span>
+<span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a><span class="co">#&gt; NormalD2          0.988          0.988 0.4277 0.4307 0.5571 0.6714 0.4560</span></span>
+<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a><span class="co">#&gt; tD2               0.974          0.974 0.4398 0.4843 0.5612 0.6249 0.4408</span></span>
 <span id="cb22-24"><a href="#cb22-24" tabindex="-1"></a><span class="co">#&gt;             NN5     AZ     BF     BG    MMD     FR    NN0    CF1    CF2    CF3</span></span>
 <span id="cb22-25"><a href="#cb22-25" tabindex="-1"></a><span class="co">#&gt; NormalD2 0.6673 0.8807 0.8706 0.0536 0.9242 0.5490 0.3822 0.5490 0.3680 0.5490</span></span>
 <span id="cb22-26"><a href="#cb22-26" tabindex="-1"></a><span class="co">#&gt; tD2      0.5915 0.8352 0.7189 0.0597 0.8766 0.4601 0.2902 0.4601 0.2811 0.4601</span></span>
@@ -931,25 +921,39 @@ distribution with unknown mean and covariance:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>dta<span class="ot">=</span><span class="fu">f</span>(<span class="dv">0</span>) <span class="co"># Null hypothesis is true</span></span>
 <span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">twosample_test</span>(dta, <span class="at">rnull=</span>rnull, <span class="at">B=</span>BT, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
 <span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co">#&gt; Data is assumed to be continuous</span></span>
-<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co">#&gt; $statistics</span></span>
-<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co">#&gt;       KS        K      CvM       AD      NN1      NN5       AZ       BF </span></span>
-<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co">#&gt; 0.070000 0.116000 0.136500 0.821800 0.990000 2.026000 0.000000 0.206900 </span></span>
-<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt;       BG      MMD </span></span>
-<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="co">#&gt; 0.017320 0.004482 </span></span>
-<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="co">#&gt; $p.values</span></span>
-<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="co">#&gt;   KS    K  CvM   AD  NN1  NN5   AZ   BF   BG  MMD </span></span>
-<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="co">#&gt; 0.30 0.25 0.34 0.52 0.58 0.31 0.44 0.64 0.68 0.26</span></span></code></pre></div>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co">#&gt; MD2sample two-sample tests</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co">#&gt; Data: continuous  | n.x = 500  | n.y = 500  | dimension = 2  | B = 100 </span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="co">#&gt;  method statistic p.value</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="co">#&gt;      KS  0.070000    0.38</span></span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="co">#&gt;       K  0.108000    0.40</span></span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="co">#&gt;     CvM  0.164400    0.27</span></span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="co">#&gt;      AD  0.954000    0.38</span></span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a><span class="co">#&gt;     NN1  0.930000    0.95</span></span>
+<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a><span class="co">#&gt;     NN5  1.922000    0.91</span></span>
+<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a><span class="co">#&gt;      AZ  0.001185    0.18</span></span>
+<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a><span class="co">#&gt;      BF  0.333700    0.18</span></span>
+<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a><span class="co">#&gt;      BG  0.048600    0.55</span></span>
+<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a><span class="co">#&gt;     MMD  0.004706    0.21</span></span></code></pre></div>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>dta<span class="ot">=</span><span class="fu">f</span>(<span class="fl">0.2</span>) <span class="co"># Null hypothesis is false</span></span>
 <span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="fu">twosample_test</span>(dta, <span class="at">rnull=</span>rnull, <span class="at">B=</span>BT, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span>
 <span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a><span class="co">#&gt; Data is assumed to be continuous</span></span>
-<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="co">#&gt; $statistics</span></span>
-<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="co">#&gt;      KS       K     CvM      AD     NN1     NN5      AZ      BF      BG     MMD </span></span>
-<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="co">#&gt; 0.16800 0.23600 0.68990 3.27180 1.08200 2.07200 0.01616 0.82110 2.88700 0.01959 </span></span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="co">#&gt; MD2sample two-sample tests</span></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="co">#&gt; Data: continuous  | n.x = 500  | n.y = 500  | dimension = 2  | B = 100 </span></span>
 <span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="co">#&gt; $p.values</span></span>
-<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a><span class="co">#&gt;   KS    K  CvM   AD  NN1  NN5   AZ   BF   BG  MMD </span></span>
-<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a><span class="co">#&gt; 0.00 0.00 0.00 0.00 0.01 0.11 0.01 0.00 0.00 0.00</span></span></code></pre></div>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="co">#&gt;  method statistic p.value</span></span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a><span class="co">#&gt;      KS   0.13000    0.00</span></span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a><span class="co">#&gt;       K   0.20000    0.00</span></span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a><span class="co">#&gt;     CvM   0.32770    0.04</span></span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a><span class="co">#&gt;      AD   2.18250    0.04</span></span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a><span class="co">#&gt;     NN1   0.98600    0.66</span></span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a><span class="co">#&gt;     NN5   2.02000    0.39</span></span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a><span class="co">#&gt;      AZ   0.01154    0.02</span></span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a><span class="co">#&gt;      BF   0.73250    0.00</span></span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a><span class="co">#&gt;      BG   3.65780    0.00</span></span>
+<span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a><span class="co">#&gt;     MMD   0.01586    0.00</span></span></code></pre></div>
 <p>Again we can find adjusted p values:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">twosample_test_adjusted_pvalue</span>(dta, <span class="at">rnull=</span>rnull, </span>
 <span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>                               <span class="at">B=</span>BT, <span class="at">maxProcessor =</span> <span class="dv">1</span>)</span></code></pre></div>

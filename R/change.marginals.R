@@ -7,7 +7,6 @@
 #' @param theta how much to modify
 #' @keywords internal
 #' @return a list of functions
-#' @export
 change.marginals=function(dta, which, theta) {
   if(which=="Exponential") {
     for(i in 2:ncol(dta$x)) {

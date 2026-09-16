@@ -37,7 +37,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
         y = matrix(stats::runif(d * ny), nx, d)
         out = list(x = x, y = y)
         if (nbins[1] > 0) 
-            out = MD2sample::bincounterR(out, nbins = nbins, 
+            out = bincounterR(out, nbins = nbins, 
                 Ranges = Ranges)
         out
     }
@@ -49,7 +49,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             S[2, 1] = a
             y = mvtnorm::rmvnorm(ny, sigma = S)
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 0.6)))
@@ -68,7 +68,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             y = y[abs(y[, 2]) < 5, ]
             y = y[1:ny, ]
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 0.6)))
@@ -86,7 +86,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             y = rbind(matrix(stats::runif(d * (ny - m)), ny - 
                 m, d), z)
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 0.35)))
@@ -97,7 +97,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = matrix(stats::runif(nx * d), ncol = d)
             cop = copula::frankCopula(theta, d)
             out = list(x = x, y = copula::rCopula(ny, cop))
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 3.15)))
@@ -108,7 +108,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = matrix(stats::runif(nx * d), ncol = d)
             cop = copula::claytonCopula(theta, d)
             out = list(x = x, y = copula::rCopula(ny, cop))
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 3)))
@@ -119,7 +119,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = matrix(stats::runif(nx * d), ncol = d)
             cop = copula::gumbelCopula(theta, d)
             out = list(x = x, y = copula::rCopula(ny, cop))
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.5)))
@@ -130,7 +130,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = matrix(stats::runif(nx * d), ncol = d)
             cop = copula::galambosCopula(theta)
             out = list(x = x, y = copula::rCopula(ny, cop))
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 2.5)))
@@ -142,7 +142,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = matrix(stats::runif(nx * d), ncol = d)
             cop = copula::huslerReissCopula(theta)
             out = list(x = x, y = copula::rCopula(ny, cop))
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 2)))
@@ -160,7 +160,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             mcg2 <- copula::mixCopula(list(cc, gc), w = wts2)
             y <- copula::rCopula(nx, copula = mcg2)
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0.5, 0.1)))
@@ -176,7 +176,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             mcg <- copula::mixCopula(list(un, fc), w = wts)
             y <- copula::rCopula(nx, copula = mcg)
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0.5, 0.1)))
@@ -196,7 +196,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             S = E/matrix(rowSums(E), nrow = ny, ncol = d)
             y = psi(R * S, th)
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.3)))
@@ -209,7 +209,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
                 shapes = c(a, 0.95))
             out = list(x = copula::rCopula(nx, copula = kcx), 
                 y = copula::rCopula(ny, copula = kcy))
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0.2, 0.7)))
@@ -226,7 +226,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             mcg <- copula::mixCopula(list(nc1, nc2), w = wts)
             y <- copula::rCopula(nx, copula = mcg)
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 0.7)))
@@ -238,7 +238,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             if (a > 1) nc2 = copula::joeCopula(a)
             out = list(x = copula::rCopula(nx, copula = nc1), 
                 y = copula::rCopula(ny, copula = nc2))
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 2)))
@@ -256,7 +256,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
         if (startsWith(which, "DalitzBabar")) 
             experiment = 3
         return(list(f = function(a = 0) {
-            tmp = MD2sample::rDalitz(a, experiment, addon, , 
+            tmp = rDalitz(a, experiment, addon, , 
                 nx = 2 * nx, ny = 2 * ny)
             xl = range(tmp[[3]][, 1])
             yl = range(tmp[[3]][, 2:3])
@@ -269,7 +269,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             y = y[!is.na(y[, 1]), ]
             y = y[!is.na(y[, 2]), ]
             out = list(x = x[1:nx, ], y = y[1:ny, ])
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, par2)))
@@ -280,7 +280,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = mvtnorm::rmvnorm(nx, c(0, 0))
             y = mvtnorm::rmvnorm(ny, mean = c(0, mu))
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 0.5)))
@@ -290,7 +290,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = mvtnorm::rmvnorm(nx, sigma = diag(c(1, 1)))
             y = mvtnorm::rmvnorm(ny, sigma = diag(c(1, s)))
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 2)))
@@ -302,7 +302,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
               matrix(c(cos(alpha), sin(alpha), -sin(alpha), 
                        cos(alpha)), 2, 2)
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 0.175)))
@@ -312,7 +312,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = matrix(stats::runif(2 * nx), ncol = 2)
             y = matrix(stats::rbeta(2 * ny, a, a), ncol = 2)
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.7)))
@@ -334,7 +334,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             }
             y = matrix(tmp[1:(2 * ny)], ncol = 2)
             out = list(x = x, y = y)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.5)))
@@ -345,9 +345,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Exponential", 
+            out = change.marginals(out, "Exponential", 
                 lambda)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.7)))
@@ -358,9 +358,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Linear", 
+            out = change.marginals(out, "Linear", 
                 s)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 0.5)))
@@ -371,9 +371,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Normal", 
+            out = change.marginals(out, "Normal", 
                 s)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.5)))
@@ -384,9 +384,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Exponential", 
+            out = change.marginals(out, "Exponential", 
                 lambda)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.7)))
@@ -397,9 +397,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Linear", 
+            out = change.marginals(out, "Linear", 
                 s)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 0.5)))
@@ -410,9 +410,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Normal", 
+            out = change.marginals(out, "Normal", 
                 s)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.5)))
@@ -423,9 +423,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Exponential", 
+            out = change.marginals(out, "Exponential", 
                 lambda)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.4)))
@@ -436,9 +436,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Linear", 
+            out = change.marginals(out, "Linear", 
                 s)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(0, 0.65)))
@@ -449,9 +449,9 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Normal", 
+            out = change.marginals(out, "Normal", 
                 s)
-            if (nbins[1] > 0) out = MD2sample::bincounterR(out, 
+            if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
         }, nbins = c(5, 5), param_alt = c(1, 1.42)))
@@ -560,7 +560,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Exponential", s)
+            out = change.marginals(out, "Exponential", s)
             out
         }, param_alt = c(1, 1.4)))
     }
@@ -570,7 +570,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Linear", s)
+            out = change.marginals(out, "Linear", s)
             out
         }, param_alt = c(0, 0.4)))
     }
@@ -580,7 +580,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Normal", s)
+            out = change.marginals(out, "Normal", s)
             out
         }, param_alt = c(1, 1.25)))
     }
@@ -590,7 +590,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Exponential", s)
+            out = change.marginals(out, "Exponential", s)
             out
         }, param_alt = c(1, 1.4)))
     }
@@ -600,7 +600,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Linear", s)
+            out = change.marginals(out, "Linear", s)
             out
         }, param_alt = c(0, 0.4)))
     }
@@ -610,7 +610,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
-            out = MD2sample::change.marginals(out, "Normal", s)
+            out = change.marginals(out, "Normal", s)
             out
         }, param_alt = c(1, 1.25)))
     }   

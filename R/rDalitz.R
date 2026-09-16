@@ -7,7 +7,6 @@
 #' @param ny =n, sample size of y data set.
 #' @keywords internal
 #' @return a list of functions
-#' @export
 rDalitz=function(nyadd=0, which=1, addon, n=200, nx=n, ny=n) {
   
   if(which==1) {M=1.97;m1=0.4937;m2=0.4937;m3=0.1396;delta=0.3}

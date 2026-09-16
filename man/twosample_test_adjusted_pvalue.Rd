@@ -2,7 +2,7 @@
 % Please edit documentation in R/twosample_test_adjusted_pvalue.R
 \name{twosample_test_adjusted_pvalue}
 \alias{twosample_test_adjusted_pvalue}
-\title{Adjusted p values}
+\title{Adjusted p values for multivariate two-sample tests}
 \usage{
 twosample_test_adjusted_pvalue(
   x,
@@ -18,59 +18,36 @@ twosample_test_adjusted_pvalue(
   rnull,
   SuppressMessages = FALSE,
   maxProcessor,
-  doMethods
+  doMethods,
+  seed = NULL
 )
 }
 \arguments{
-\item{x}{Continuous data: either a matrix of numbers, or a list with two matrices called x and y.
-if it is a matrix Observations are in different rows.
-Discrete data: a vector of counts or a matrix with columns named vals_x, vals_y, x and y.}
+\item{x, y, vals_x, vals_y}{Data arguments as in \code{twosample_test()}.}
 
-\item{y}{a matrix of numbers if data if data is continuous or a vector of counts  if data is discrete.}
+\item{B}{Length-one or length-two vector giving simulation sizes.}
 
-\item{vals_x}{=NA, a vector of values for discrete random variable, or NA if data is continuous.}
+\item{nbins, minexpcount, Ranges}{Chi-square settings.}
 
-\item{vals_y}{=NA, a vector of values for discrete random variable, or NA if data is continuous.}
+\item{samplingmethod}{Sampling method for discrete data.}
 
-\item{B}{=c(5000, 1000), number of simulation runs for permutation test and for estimation
-of the empirical distribution function.}
+\item{DoTransform}{Should continuous data be transformed to the unit hypercube?}
 
-\item{nbins}{=c(5, 5), number of bins for chi square tests (2D only).}
+\item{rnull}{Optional parametric-bootstrap generator.}
 
-\item{minexpcount}{= 5, minimum required expected counts for chi-square tests.}
+\item{SuppressMessages}{Suppress informative messages?}
 
-\item{samplingmethod}{="Binomial" or "independence" for discrete data.}
+\item{maxProcessor}{Number of processors.}
 
-\item{Ranges}{=matrix(c(-Inf, Inf, -Inf, Inf),2,2) a 2x2 matrix with lower and upper bounds.}
+\item{doMethods}{Methods to combine. If missing, a default subset is used.}
 
-\item{DoTransform}{=TRUE, should data be transformed to interval (0,1)?}
-
-\item{rnull}{routine for parametric bootstrap.}
-
-\item{SuppressMessages}{= FALSE, print informative messages?}
-
-\item{maxProcessor}{number of cores for parallel processing.}
-
-\item{doMethods}{Which methods should be included? If missing a small number of methods that generally have good power are used.}
+\item{seed}{Optional random-number seed for reproducibility.}
 }
 \value{
-NULL, results are printed out.
+A named numeric vector containing the individual p-values and the
+adjusted minimum-p value in the final element, named \code{"Min p"}.
 }
 \description{
-This function runs a number of two sample tests using Rcpp and parallel computing and then finds the correct p value for the combined tests.
-}
-\details{
-For details consult the vignette("MD2sample","MD2sample")
-}
-\examples{
-#Note that the number of simulation runs B is very small to
-#satisfy CRAN's run time constraints. 
-#Two continuous data sets from a multivariate normal:
-x = mvtnorm::rmvnorm(100, c(0,0))
-y = mvtnorm::rmvnorm(120, c(0,0))
-twosample_test_adjusted_pvalue(x, y, maxProcessor=1, B=20)
-#Two discrete data sets from some distribution:
-x = table(sample(1:4, size=1000, replace = TRUE))
-y = table(sample(1:4, size=500, replace = TRUE, prob=c(1, 1.5, 1, 1)))
-twosample_test_adjusted_pvalue(x, y, rep(1:2,2), rep(1:2, each=2), maxProcessor=1, B=20)
+Runs several two-sample tests and returns their individual p-values together
+with a simulation-based p-value for the minimum p-value across the selected tests.
 }

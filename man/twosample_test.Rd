@@ -12,6 +12,7 @@ twosample_test(
   TS,
   TSextra,
   B = 5000,
+  seed = NULL,
   nbins = c(5, 5),
   minexpcount = 5,
   Ranges = matrix(c(-Inf, Inf, -Inf, Inf), 2, 2),
@@ -27,7 +28,7 @@ twosample_test(
 \arguments{
 \item{x}{Continuous data: either a matrix of numbers, or a list with two matrices called x and y.
 if it is a matrix Observations are in different rows.
-Discrete data: a vector of counts or a matrix with columns named vals_x, vals_y, x and y.}
+Discrete data: a vector of counts or a four-column numeric matrix containing two support/bin columns and two count columns. Standard names vals_x, vals_y, x and y are used when present; otherwise the roles are inferred from the numbers of distinct values.}
 
 \item{y}{a matrix of numbers if data is continuous or a vector of counts  if data is discrete.}
 
@@ -35,11 +36,13 @@ Discrete data: a vector of counts or a matrix with columns named vals_x, vals_y,
 
 \item{vals_y}{=NA, a vector of values for discrete random variables, or NA if data is continuous.}
 
-\item{TS}{user supplied routine to calculate test statistics for new tests.}
+\item{TS}{user supplied routine to calculate test statistics for new tests. For discrete data it may have signature \code{TS(x)} or \code{TS(x, TSextra)}, where \code{x} is the four-column discrete-data matrix; the legacy 4- or 5-argument form is also accepted.}
 
 \item{TSextra}{(optional) additional info passed to TS, if necessary.}
 
 \item{B}{=5000, number of simulation runs for permutation test.}
+
+\item{seed}{=NULL, optional seed for simulations}
 
 \item{nbins}{=c(5,5), for chi square tests (2D only).}
 
@@ -63,7 +66,7 @@ is used. If set to 1 no parallel processing is done.}
 \item{doMethods}{="all", Which methods should be included?}
 }
 \value{
-A list of two numeric vectors, the test statistics and the p values.
+An object of class \code{"MD2sample_test"} with components \code{results}, \code{statistics}, \code{p.values}, \code{metadata}, and \code{call}. The traditional \code{$statistics} and \code{$p.values} components are retained for backward compatibility.
 }
 \description{
 This function runs a number of two sample tests using Rcpp and parallel computing.

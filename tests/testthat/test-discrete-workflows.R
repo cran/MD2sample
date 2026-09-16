@@ -45,7 +45,8 @@ test_that("discrete two-sample workflows run", {
     ),
     type = "message"
   )
-  expect_null(adjusted_result)
+  expect_true(is.numeric(adjusted_result))
+  expect_true("Min p" %in% names(adjusted_result))
 })
 
 test_that("discrete power workflows return probabilities", {

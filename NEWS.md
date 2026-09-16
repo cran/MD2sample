@@ -1,6 +1,13 @@
+# MD2sample 1.4.0 September 16, 2026
+      Improved output
+      Added confidence intervals for power estimates
+      Added seed for better reproducibility
+      Some bug fixes
+
 # MD2sample 1.3.0 August 2, 2026
       Added testthat suite
       Some minor bug fixes
+
 # MD2sample 1.2.2 June 24, 2026
       Some minor bug fixes
 

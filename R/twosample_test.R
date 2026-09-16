@@ -6,13 +6,14 @@
 #' 
 #' @param  x  Continuous data: either a matrix of numbers, or a list with two matrices called x and y.
 #'                             if it is a matrix Observations are in different rows.
-#'            Discrete data: a vector of counts or a matrix with columns named vals_x, vals_y, x and y.
+#'            Discrete data: a vector of counts or a four-column numeric matrix containing two support/bin columns and two count columns. Standard names vals_x, vals_y, x and y are used when present; otherwise the roles are inferred from the numbers of distinct values.
 #' @param  y a matrix of numbers if data is continuous or a vector of counts  if data is discrete. 
 #' @param  vals_x =NA, a vector of values for discrete random variables, or NA if data is continuous.
 #' @param  vals_y =NA, a vector of values for discrete random variables, or NA if data is continuous.
-#' @param  TS user supplied routine to calculate test statistics for new tests.
+#' @param  TS user supplied routine to calculate test statistics for new tests. For discrete data it may have signature \code{TS(x)} or \code{TS(x, TSextra)}, where \code{x} is the four-column discrete-data matrix; the legacy 4- or 5-argument form is also accepted.
 #' @param  TSextra (optional) additional info passed to TS, if necessary.
 #' @param  B =5000, number of simulation runs for permutation test.
+#' @param  seed =NULL, optional seed for simulations
 #' @param  nbins =c(5,5), for chi square tests (2D only).
 #' @param  minexpcount =5, lowest required count for chi-square test (2D only).
 #' @param  Ranges =matrix(c(-Inf, Inf, -Inf, Inf),2,2), a 2x2 matrix with lower and upper bounds (2D only).
@@ -24,7 +25,7 @@
 #' @param  maxProcessor  number of cores to use. If missing the number of physical cores-1 
 #'             is used. If set to 1 no parallel processing is done.
 #' @param  doMethods ="all", Which methods should be included?
-#' @return A list of two numeric vectors, the test statistics and the p values. 
+#' @return An object of class \code{"MD2sample_test"} with components \code{results}, \code{statistics}, \code{p.values}, \code{metadata}, and \code{call}. The traditional \code{$statistics} and \code{$p.values} components are retained for backward compatibility.
 #' @examples
 #' #Two continuous data sets from a multivariate normal:
 #' x = mvtnorm::rmvnorm(100, c(0,0))
@@ -46,276 +47,177 @@
 #' dta=cbind(x=x, y=y, vals_x=vals_x, vals_y=vals_y)
 #' twosample_test(dta, TS=chiTS.disc, TSextra=TSextra, B=100, maxProcessor=1)
 #' @export 
-twosample_test = function(x, y, vals_x=NA, vals_y=NA, TS, TSextra, B=5000, 
-                          nbins=c(5,5), minexpcount=5, 
-                          Ranges=matrix(c(-Inf, Inf, -Inf, Inf),2,2),
-                          DoTransform=TRUE, samplingmethod="Binomial", rnull,
-                          SuppressMessages=FALSE, LargeSampleOnly=FALSE, 
-                          maxProcessor, doMethods="all") {
-  
-  # Convert sampling method from character label to internal numeric code.
-  # independence = 1, Binomial = 2.
-  if(!is.numeric(samplingmethod))
-    samplingmethod = ifelse(samplingmethod=="independence", 1, 2)
+twosample_test <- function(x, y, vals_x=NA, vals_y=NA, TS, TSextra, B=5000,
+                           seed=NULL, nbins=c(5,5), minexpcount=5,
+                           Ranges=matrix(c(-Inf, Inf, -Inf, Inf),2,2),
+                           DoTransform=TRUE, samplingmethod="Binomial", rnull,
+                           SuppressMessages=FALSE, LargeSampleOnly=FALSE,
+                           maxProcessor, doMethods="all") {
+  call <- match.call()
+  B_requested <- B
+  validate_integer_scalar(B, "B", 0L)
+  validate_logical_scalar(DoTransform, "DoTransform")
+  validate_logical_scalar(SuppressMessages, "SuppressMessages")
+  validate_logical_scalar(LargeSampleOnly, "LargeSampleOnly")
+  if(!missing(maxProcessor)) validate_integer_scalar(maxProcessor, "maxProcessor", 1L)
+  samplingmethod <- normalize_samplingmethod(samplingmethod)
+  if(!is.null(seed)) {
+    if(length(seed) != 1L || is.na(seed) || !is.finite(seed))
+      stop("seed must be NULL or a single finite number", call.=FALSE)
+    set.seed(seed)
+  }
+  inp <- prepare_twosample_input(
+    x=x, y_missing=missing(y), y=if(missing(y)) NULL else y,
+    vals_x=vals_x, vals_y=vals_y, DoTransform=DoTransform,
+    Ranges=Ranges, SuppressMessages=SuppressMessages
+  )
+  Continuous <- inp$Continuous
+  dta <- inp$dta
+  x <- inp$x; y <- inp$y; Dim <- inp$Dim
+  DoTransform <- inp$DoTransform; Ranges <- inp$Ranges
 
-  # Determine whether data were supplied as separate x/y objects
-  # or bundled inside x.
-  if(missing(y)) {
-    if(is.list(x)) { 
-      # Continuous data supplied as list(x=..., y=...).
-      if(!SuppressMessages) message("Data is assumed to be continuous")
-      Continuous = TRUE
-      dta = x
-      y = x$y
-      x = x$x 
-      Dim = ncol(x)
-    }
-    else {
-      # Discrete data supplied as a matrix with columns:
-      # x, y, vals_x, vals_y.
-      if(!SuppressMessages) message("Data is assumed to be discrete")
-      Continuous = FALSE
-      dta = x
-      
-      # Dummy matrices are used so later continuous-data references
-      # do not fail, although the actual data are stored in dta.
-      x = matrix(1:4,2,2)
-      y = matrix(1:4,2,2)
-      
-      dta = list(
-        x = dta[,"x"], 
-        y = dta[,"y"], 
-        vals_x = dta[,"vals_x"], 
-        vals_y = dta[,"vals_y"]
-      )
-      
-      # Discrete data are not transformed to the unit hypercube.
-      DoTransform = FALSE
-    }
-  }
-  else {
-    
-    # If vals_x or vals_y is NA, treat the data as continuous.
-    # Otherwise treat them as discrete.
-    Continuous = ifelse(any(is.na(c(vals_x, vals_y))), TRUE, FALSE)
-    
+  test_methods(doMethods, Continuous)
+  if(length(nbins) == 1L) nbins <- rep(nbins, 2L)
+  if(any(!is.finite(nbins)) || any(nbins < 1) || any(abs(nbins-round(nbins)) > sqrt(.Machine$double.eps)))
+    stop("nbins must contain positive integers.", call.=FALSE)
+  if(length(minexpcount) != 1L || is.na(minexpcount) || !is.finite(minexpcount) || minexpcount <= 0)
+    stop("minexpcount must be a single positive number.", call.=FALSE)
+
+  TSextra0 <- if(missing(TSextra)) NULL else TSextra
+  rnull0 <- if(missing(rnull)) NULL else rnull
+  TSextra <- makeTSextra(dta, Continuous, DoTransform, samplingmethod,
+                         TSextra0, rnull0, inp$rawdta)
+
+  outchi <- list(statistics=NULL, p.values=NULL)
+  outpvals <- list(statistics=NULL, p.values=NULL)
+  tmp <- maketypeTS(TS, Continuous)
+  typeTS <- tmp$typeTS; TS <- tmp$TS; CustomTS <- tmp$CustomTS
+
+  if(CustomTS && LargeSampleOnly)
+    stop("LargeSampleOnly=TRUE is only available for the included methods.", call.=FALSE)
+
+  if(!CustomTS) {
     if(Continuous) {
-      if(!SuppressMessages) message("Data is assumed to be continuous")
-      dta = list(x=x, y=y)
-      Dim = ncol(x)
-    } 
-    else {
-      if(!SuppressMessages) message("Data is assumed to be discrete")
-      dta = list(x=x, y=y, vals_x=vals_x, vals_y=vals_y)
-      
-      # Dummy matrices for compatibility with later references.
-      x = matrix(1:4,2,2)
-      y = matrix(1:4,2,2)
-      
-      DoTransform = FALSE
-    }    
-  }
-  
-  # Check whether the requested methods are valid for the data type.
-  # If test_methods returns TRUE, stop and return NULL.
-  if(test_methods(doMethods, Continuous)) return(NULL)
-  
-  if(Continuous) {
-    
-    # Ensure x is the smaller sample and y is the larger sample.
-    if(nrow(y) < nrow(x)) {
-      tmp = y
-      y = x
-      x = tmp
-      dta = list(x=x, y=y)
-    }
-    
-    # Store original data before optional transformation.
-    rawdta = dta
-    
-    # Transform continuous observations to the unit hypercube.
-    if(DoTransform) {
-      dta = transform01(dta)
-      x = dta$x
-      y = dta$y
-      Ranges = matrix(c(0, 1, 0, 1),2,2)
+      if(Dim == 2L && missing(rnull))
+        outchi <- chisq2D_test_cont(x, y, Ranges, nbins, minexpcount)
+      if(missing(rnull)) outpvals <- TS_cont_pval(x, y)
+    } else if(missing(rnull)) {
+      outchi <- chisq2D_test_disc(dta, minexpcount)
     }
   }
-  
-  # If no extra arguments are supplied for the test statistic,
-  # create a placeholder list.
-  if(missing(TSextra)) TSextra = list(aaa=0)
-  
-  # Add helper functions and pre-computed quantities needed by
-  # continuous-data test statistics.
-  if(Continuous) 
-    TSextra = c(
-      TSextra, 
-      knn = function(x) FNN::get.knn(x, 5)$nn.index,
-      dist = function(dta) find_dist(dta),
-      distances = list(find_dist(dta)),
-      DoTransform = DoTransform
-    )
-  else 
-    # Add helper functions and settings needed by discrete-data tests.
-    TSextra = c(
-      TSextra, 
-      dist = function(dta) NULL,
-      organize = function(dta) dta = dta[order(dta[,1], dta[,2]), ],
-      samplingmethod = samplingmethod
-    )
-  
-  # If a null-data generator is provided, pass it to the test routine.
-  # For continuous data, also pass the un-transformed original data.
-  if(!missing(rnull)) {
-    if(Continuous) 
-      TSextra = c(TSextra, rnull=rnull, rawdta=list(rawdta))
-    else 
-      TSextra = c(TSextra, rnull=rnull)
-  }   
-  
-  # Initialize objects that may later store chi-square or analytic p-value results.
-  outchi = list(statistics=NULL, p.value=NULL)
-  outpvals = list(statistics=NULL, p.value=NULL)
-  
-  # Decide whether to run built-in methods or a user-supplied statistic.
-  CustomTS = TRUE
-  
-  if(missing(TS)) {
-    
-    # No user-supplied test statistic: use built-in methods.
-    CustomTS = FALSE
-    
-    if(Continuous) {
-      
-      # For two-dimensional continuous data, run chi-square tests
-      # if no custom null generator was supplied.
-      if(Dim == 2) {
-        if(length(nbins) == 1) nbins = c(nbins, nbins)
-        
-        if(missing(rnull))
-          outchi = chisq2D_test_cont(x, y, Ranges, nbins, minexpcount)
-      }  
-      
-      # Run built-in methods with large-sample p-values.
-      if(missing(rnull))
-        outpvals = TS_cont_pval(x, y)
-      
-      # typeTS identifies the calling convention used by calcTS/testC.
-      typeTS = 1
-      TS = TS_cont
-      dta = list(x=x, y=y)
-    }
-    else {
-      
-      # Built-in discrete-data tests.
-      typeTS = 4
-      
-      if(missing(rnull))
-        outchi = chisq2D_test_disc(dta, minexpcount)
-      
-      TS = TS_disc
-    }    
-  }  
-  else {
-    
-    # User supplied a custom test statistic.
-    
-    # If TS is an Rcpp/.Call routine, parallel execution is disabled.
-    if(substr(deparse(TS)[2], 1, 5) == ".Call") {
-      if(!missing(maxProcessor) & maxProcessor > 1) {
-        if(!SuppressMessages) 
-          message("Parallel Programming is not possible if custom TS is written in C++. Switching to single processor")  
-        maxProcessor = 1
-      }  
-    }
-    
-    # Determine the expected calling convention from the number
-    # of formal arguments in the supplied test statistic.
-    if(Continuous) 
-      typeTS = length(formals(TS))
-    else 
-      typeTS = ifelse(length(formals(TS)) == 5, 6, 5)  
+
+  TS_data <- calcTS(dta, TS, typeTS, TSextra)
+  validate_ts_output(TS_data)
+
+  if(B == 0L) {
+    pvals <- rep(NA_real_, length(TS_data)); names(pvals) <- names(TS_data)
+    return(.new_MD2sample_test(TS_data, pvals, inp, B_requested, 0L,
+                               NA_integer_, typeTS, LargeSampleOnly, call))
   }
-  
-  # Compute the observed test statistic.
-  TS_data = calcTS(dta, TS, typeTS, TSextra)
-  
-  # If B=0, return only the observed statistic without simulation p-values.
-  if(B == 0) return(TS_data)
-  
-  # Require the test statistic output to be a named vector.
-  if(any(is.null(names(TS_data)))) {
-    if(!SuppressMessages) message("output of TS routine has to be a named vector!")
-    return(NULL)
-  }
-  
-  # Choose number of processors for simulation.
-  # If not specified, use physical cores minus one, with minimum 1.
-  if(missing(maxProcessor))
-    maxProcessor = max(parallel::detectCores(logical = FALSE)-1, 1)  
-  
-  # Check whether parallelization is worthwhile.
-  if(maxProcessor > 1) {
-    tm = timecheck(dta, TS, typeTS, TSextra)
-    
-    # Use one processor if the task is too small for parallel overhead
-    # to be worthwhile.
-    if(2*tm[1]*B < 20 || B < 2*maxProcessor) {
-      maxProcessor = 1
-      if(!SuppressMessages) message("maxProcessor set to 1 for faster computation")
-    }
-    else if(!SuppressMessages) 
-      message(paste("Using ", maxProcessor, " cores.."))  
-  } 
-  
-  # Run simulation/permutation tests unless only large-sample methods
-  # were requested.
+
   if(!LargeSampleOnly) {
-    
-    if(maxProcessor == 1) {
-      # Serial simulation.
-      outTS = testC(dta, TS, typeTS, TSextra, B=B)
-    }
-    else {
-      # Parallel simulation. Each worker runs approximately B/maxProcessor
-      # simulations, and the resulting p-values are averaged.
-      cl = parallel::makeCluster(maxProcessor)
+    maxProcessor <- makemaxProcessor(maxProcessor, dta, TS, typeTS, TSextra, B,
+                                     SuppressMessages, tmp$useSingleProcessor)
+    if(tmp$useSingleProcessor && !SuppressMessages && maxProcessor == 1L)
+      message("Parallel processing is not possible if custom TS is written in C++. Switching to single processor")
+    B_used <- ceiling(B/maxProcessor)*maxProcessor
+    if(maxProcessor == 1L) {
+      outTS <- testC(dta, TS, typeTS, TSextra, B=B_used)
+    } else {
+      cl <- parallel::makeCluster(maxProcessor)
       on.exit(parallel::stopCluster(cl), add=TRUE)
-      z = parallel::clusterCall(
-        cl, testC, 
-        dta=dta, TS=TS, typeTS=typeTS, TSextra=TSextra, 
-        B=round(B/maxProcessor)
-      )
-      
-      # Average p-values across workers.
-      p = z[[1]]$p.values
-      for(i in 2:maxProcessor) p = p + z[[i]]$p.values
-      p = round(p/maxProcessor, 4)  
-      
-      outTS = list(statistics=z[[1]]$statistics, p.values=p)
+      if(!is.null(seed)) parallel::clusterSetRNGStream(cl, iseed=seed)
+      z <- parallel::clusterCall(cl, testC, dta=dta, TS=TS, typeTS=typeTS,
+                                 TSextra=TSextra, B=as.integer(B_used/maxProcessor))
+      p <- z[[1]]$p.values
+      for(i in 2:maxProcessor) p <- p + z[[i]]$p.values
+      outTS <- list(statistics=z[[1]]$statistics, p.values=p/maxProcessor)
     }
+  } else {
+    maxProcessor <- NA_integer_
+    B_used <- 0L
+    outTS <- list(statistics=NULL, p.values=NULL)
   }
-  else {
-    # Skip simulation-based tests.
-    outTS = list(statistics=NULL, p.values=NULL)
+
+  if(CustomTS) {
+    out <- signif_digits(outTS)
+  } else {
+    s <- c(outTS$statistics, outpvals$statistics, outchi$statistics)
+    p <- c(outTS$p.values, outpvals$p.values, outchi$p.values)
+    if(doMethods[1] != "all") { s <- s[doMethods]; p <- p[doMethods] }
+    out <- signif_digits(list(statistics=s, p.values=p))
   }
-  
-  # If the user supplied a custom test statistic, return only those results.
-  if(CustomTS) return(signif_digits(outTS))
-  
-  # Combine simulation-based, analytic, and chi-square results.
-  s = c(outTS$statistics, outpvals$statistics, outchi$statistic)
-  p = c(outTS$p.values, outpvals$p.values, outchi$p.value)
-  
-  # If requested, keep only selected methods.
-  if(doMethods[1] != "all") {
-    s = s[doMethods]
-    p = p[doMethods]
-  }  
-  
-  # Return rounded/significant-digit formatted results.
-  signif_digits(list(statistics=s, p.values=p))
+
+  .new_MD2sample_test(out$statistics, out$p.values, inp, B_requested, B_used,
+                      maxProcessor, typeTS, LargeSampleOnly, call)
 }
 
+.new_MD2sample_test <- function(statistics, p.values, inp, B_requested, B_used,
+                                maxProcessor, typeTS, LargeSampleOnly, call) {
+  if(length(statistics) != length(p.values))
+    stop("statistics and p.values must have the same length", call.=FALSE)
+  results <- data.frame(method=names(statistics), statistic=unname(statistics),
+                        p.value=unname(p.values), row.names=NULL, check.names=FALSE)
+  structure(list(results=results, statistics=statistics, p.values=p.values,
+                 metadata=list(data.type=if(inp$Continuous) "continuous" else "discrete",
+                               n.x=inp$n.x, n.y=inp$n.y, dimension=inp$Dim,
+                               B.requested=B_requested, B.used=B_used,
+                               maxProcessor=maxProcessor, typeTS=typeTS,
+                               transformed=inp$DoTransform,
+                               LargeSampleOnly=LargeSampleOnly),
+                 call=call), class="MD2sample_test")
+}
 
+#' Methods for MD2sample two-sample test results
+#'
+#' Print, summarize, and convert structured \code{MD2sample_test} objects.
+#'
+#' @param x An object of class \code{"MD2sample_test"}, or for
+#'   \code{print.summary.MD2sample_test}, an object of class
+#'   \code{"summary.MD2sample_test"}.
+#' @param object An object of class \code{"MD2sample_test"}.
+#' @param ... Further arguments passed to the relevant method.
+#' @param row.names Ignored; included for compatibility with \code{as.data.frame}.
+#' @param optional Ignored; included for compatibility with \code{as.data.frame}.
+#' @return The print methods return their input invisibly; \code{summary()}
+#'   returns a summary object; \code{as.data.frame()} returns columns
+#'   \code{method}, \code{statistic}, and \code{p.value}.
+#' @name MD2sample_test-methods
+#' @export
+print.MD2sample_test <- function(x, ...) {
+  cat("\nMD2sample two-sample tests\n")
+  cat("Data:", x$metadata$data.type,
+      " | n.x =", x$metadata$n.x,
+      " | n.y =", x$metadata$n.y,
+      " | dimension =", x$metadata$dimension,
+      " | B =", x$metadata$B.used, "\n\n")
+  print(x$results, row.names=FALSE, ...)
+  invisible(x)
+}
+
+#' @rdname MD2sample_test-methods
+#' @export
+summary.MD2sample_test <- function(object, ...) {
+  out <- list(call=object$call, results=object$results, metadata=object$metadata)
+  class(out) <- "summary.MD2sample_test"
+  out
+}
+
+#' @rdname MD2sample_test-methods
+#' @export
+print.summary.MD2sample_test <- function(x, ...) {
+  cat("\nMD2sample two-sample test summary\n\n")
+  cat("Data type: ", x$metadata$data.type, "\n", sep="")
+  cat("Sample sizes: ", x$metadata$n.x, " and ", x$metadata$n.y, "\n", sep="")
+  cat("Dimension: ", x$metadata$dimension, "\n", sep="")
+  cat("Simulation runs requested: ", x$metadata$B.requested, "\n", sep="")
+  cat("Simulation runs used: ", x$metadata$B.used, "\n", sep="")
+  if(!is.na(x$metadata$maxProcessor)) cat("Processors used: ", x$metadata$maxProcessor, "\n", sep="")
+  cat("\nTest results:\n")
+  print(x$results, row.names=FALSE)
+  invisible(x)
+}
+
+#' @rdname MD2sample_test-methods
+#' @export
+as.data.frame.MD2sample_test <- function(x, row.names=NULL, optional=FALSE, ...) x$results

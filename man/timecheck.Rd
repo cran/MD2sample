@@ -21,3 +21,4 @@ Mean computation time
 \description{
 test function
 }
+\keyword{internal}

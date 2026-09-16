@@ -20,7 +20,11 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
   
    dta = rxy(avals[1], bvals[1])
    Continuous=TRUE
-   if(is.matrix(dta)) Continuous=FALSE
+   if(is.matrix(dta)) {
+     if(!is_discrete_data(dta))
+       stop("A matrix returned by the data generator must be a recognizable four-column discrete-data matrix.", call.=FALSE)
+     Continuous=FALSE
+   }
    DoTransform=FALSE
    if(Continuous) {
      if("DoTransform" %in% names(TSextra)) DoTransform=TSextra$DoTransform
@@ -76,7 +80,7 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
         rownames(pwr)=avals
         for(i in 1:length(avals)) {
           for(j in 1:B) {
-            dta=rxy(avals[i], bvals[i])
+            dta=prepare_discrete_data(rxy(avals[i], bvals[i]))
             chi=chisq2D_test_disc(dta, minexpcount)$p.values
             pwr[i,1] = pwr[i,1] + ifelse(chi<alpha, 1, 0)
           }
@@ -85,16 +89,7 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
      }
      else {      
        dta=rxy(avals[1], bvals[1])
-       if(typeTS>=4) {
-          dn=colnames(dta)
-          if("x"%in%dn & "y"%in%dn & "vals_x"%in%dn & "vals_y"%in%dn)
-             dta=list(x=dta[,"x"],y=dta[,"y"],vals_x=dta[,"vals_x"],vals_y=dta[,"vals_y"])
-          else {
-            dta=list(x=dta[,3],y=dta[,4],vals_x=dta[,1],vals_y=dta[,2])
-            message("data matrix is missing column names. Assumed order is:")
-            message("vals_x, vals_y, x, y")
-          }
-       }
+       if(typeTS>=4) dta=prepare_discrete_data(dta)
        TS_sim=calcTS(dta, TS, typeTS, TSextra)
        pwr=matrix(0,  length(avals), length(TS_sim))
        colnames(pwr)=names(TS_sim)
@@ -102,13 +97,7 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
        for(i in 1:length(avals)) {
          for(j in 1:B) {
            dta=rxy(avals[i], bvals[i])
-           if(typeTS>=4) {
-             if("x"%in%dn & "y"%in%dn & "vals_x"%in%dn & "vals_y"%in%dn)
-               dta=list(x=dta[,"x"],y=dta[,"y"],vals_x=dta[,"vals_x"],vals_y=dta[,"vals_y"])
-             else {
-               dta=list(x=dta[,3],y=dta[,4],vals_x=dta[,1],vals_y=dta[,2])
-             }
-           }
+           if(typeTS>=4) dta=prepare_discrete_data(dta)
            TS_sim=calcTS(dta, TS, typeTS, TSextra)
            for(k in 1:ncol(pwr)) 
               pwr[i,k] = pwr[i,k] + ifelse(TS_sim[k]<alpha, 1, 0)/B

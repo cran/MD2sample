@@ -1,54 +1,24 @@
-#' This function checks whether the correct methods have been requested
-#' @param  doMethods ="all" Which methods should be included?
-#' @param  Continuous is data continuous
-#' @param  ReturnMethodNames = FALSE should names of methods be returned?
+#' Check requested two-sample methods
+#' @param doMethods Methods requested, or "all".
+#' @param Continuous Is the data continuous?
+#' @param ReturnMethodNames Return available method names instead of validating?
+#' @return Invisibly FALSE after successful validation, or the available names.
 #' @keywords internal
-#' @return TRUE/FALSE or a character vector
-#' @export 
-test_methods=function(doMethods, Continuous, ReturnMethodNames=FALSE) {
-    if(doMethods[1]=="all") return(FALSE)
-    if(Continuous) methods=
-                 c("KS","K","CvM","AD","NN1", "NN5", "AZ","BF","BG",
-                   "FR","NN0","CF1","CF2","CF3","CF4",
-                   "Ball",  "ES", "EP")
-    else methods=c("KS","K","CvM","AD","NN","AZ", "BF","ChiSquare")
-    if(ReturnMethodNames) return(methods)
-    Good=TRUE
-    for(i in seq_along(doMethods)) {
-      if(!(doMethods[i]%in%methods)) {Good=FALSE;break}
-    }
-    if(Good) return(FALSE)
-    message(paste0(doMethods[i]," is not an included method for ", 
-                   ifelse(Continuous, "continuous", "discrete"), " data!"))
-    if(Continuous) {
-         message("For continuous data included methods are")
-         message("Method               Code")
-         message("Kolmogorov-Smirnov   KS")
-         message("Kuiper               K")
-         message("Cramer-vonMises      CvM")
-         message("Anderson-Darling     AD")
-         message("1-nearest neighbor   NN1")
-         message("5-nearest neighbor   NN5")
-         message("Aslan-Zech           AZ")
-         message("Baringhaus-Franz     BF")
-         message("Biswas-Ghosh         BG")
-         message("Friedman-Rafski      FR")
-         message("x nearest neighbor   NN0")
-         message("Chen-Friedman        CF1-CF4")
-         message("Ball Divergence      Ball")
-         message("Chi square tests     ES, EP")
-    }
-    if(!Continuous) {
-      message("For discrete data included methods are")
-      message("Method               Code")
-      message("Kolmogorov-Smirnov   KS")
-      message("Kuiper               K")
-      message("Cramer-vonMises      CvM")
-      message("Anderson-Darling     AD")
-      message("Nearest Neigbor      NN")
-      message("Aslan-Zech           AZ")
-      message("Baringhaus-Franz     BF")
-      message("Chi square test      Chisquare")
-    }
-    TRUE
+test_methods <- function(doMethods, Continuous, ReturnMethodNames=FALSE) {
+  methods <- if(Continuous) {
+    c("KS","K","CvM","AD","NN1","NN5","AZ","BF","BG","MMD",
+      "FR","NN0","CF1","CF2","CF3","CF4","Ball","ES","EP")
+  } else {
+    c("KS","K","CvM","AD","NN","AZ","BF","ChiSquare")
+  }
+  if(ReturnMethodNames) return(methods)
+  if(length(doMethods) < 1L || anyNA(doMethods))
+    stop("doMethods must contain at least one method name.", call.=FALSE)
+  if(length(doMethods)==1L && identical(doMethods[1L], "all")) return(invisible(FALSE))
+  bad <- setdiff(doMethods, methods)
+  if(length(bad))
+    stop("Unknown method(s) for ", if(Continuous) "continuous" else "discrete",
+         " data: ", paste(bad, collapse=", "), ". Available methods are: ",
+         paste(methods, collapse=", "), ".", call.=FALSE)
+  invisible(FALSE)
 }

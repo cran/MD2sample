@@ -17,3 +17,4 @@ A list with rounded vectors
 \description{
 This function does some rounding to nice numbers
 }
+\keyword{internal}

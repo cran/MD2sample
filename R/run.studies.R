@@ -22,7 +22,7 @@
 #' #The new test is a (included) chi square test:
 #' TSextra=list(which="pval", nbins=rbind(c(3,3), c(4,4)))
 #' run.studies(study=c("NormalD2", "tD2"), Continuous=TRUE,  
-#'           TS=MD2sample::chiTS.cont, TSextra=TSextra, 
+#'           TS=chiTS.cont, TSextra=TSextra, 
 #'           With.p.value=TRUE, B=100)
 #' @export
 run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,  
@@ -79,11 +79,12 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
   # If no custom test statistic is supplied, rerun included package tests.
   RerunIncludedTests=ifelse(missing(TS), TRUE, FALSE)
   
-  # For a custom test statistic, determine the calling convention.
+  # For a custom test statistic, use the same calling-convention helper as
+  # twosample_test() and twosample_power().
   if(!missing(TS)) {
-    if(Continuous) typeTS=length(formals(TS))
-    else typeTS=ifelse(length(formals(TS))==3, 6, 5)  
-  }  
+    tsinfo <- maketypeTS(TS, Continuous)
+    typeTS <- tsinfo$typeTS
+  }
   
   # Initialize list to store power results for each study.
   newpwr=as.list(study)
@@ -116,7 +117,7 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
       # by power_pvals().
       rxy=function(a,b=0) tmp$f(a)
       
-      newpwr[[i]]=MD2sample::power_pvals(rxy, param_alt[i, ], 
+      newpwr[[i]]=power_pvals(rxy, param_alt[i, ], 
                                          0, TS, typeTS, TSextra, alpha=alpha, B=B)
     }    
     
@@ -141,12 +142,15 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
   if(Continuous) oldpwr=oldpwr[["Alt Cont"]][study, , drop=FALSE]
   else oldpwr=oldpwr[["Alt Disc"]][study, , drop=FALSE]
   
-  # Convert the new results list into a matrix.
-  pwr=matrix(0, length(study), ncol(newpwr[[1]]))
-  
-  for(i in seq_along(study)) pwr[i, ]=newpwr[[i]]
-  
-  dimnames(pwr)=list(study, colnames(newpwr[[1]]))
+  # Convert the new results list into a matrix, accepting either the
+  # historical one-row matrix or the vector returned for one alternative.
+  as_power_row <- function(z) {
+    if(is.matrix(z)) return(z[1, , drop=FALSE])
+    matrix(z, nrow=1, dimnames=list(NULL, names(z)))
+  }
+  rows <- lapply(newpwr, as_power_row)
+  pwr <- do.call(rbind, rows)
+  rownames(pwr) <- study
   
   # For included tests, return only the newly computed power matrix.
   if(RerunIncludedTests) return(pwr)
@@ -157,7 +161,7 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
   # If several studies were run, summarize average rankings.
   if(length(study)>1) {
     a1=apply(allpwr, 1, rank)
-    names(a1)=c(colnames(newpwr[[1]]), colnames(oldpwr))
+    rownames(a1)=colnames(allpwr)
     
     message("Average number of times a test is close to best:")
     print(sort(apply(a1,1,mean)))

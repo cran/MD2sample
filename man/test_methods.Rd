@@ -2,21 +2,21 @@
 % Please edit documentation in R/test_methods.R
 \name{test_methods}
 \alias{test_methods}
-\title{This function checks whether the correct methods have been requested}
+\title{Check requested two-sample methods}
 \usage{
 test_methods(doMethods, Continuous, ReturnMethodNames = FALSE)
 }
 \arguments{
-\item{doMethods}{="all" Which methods should be included?}
+\item{doMethods}{Methods requested, or "all".}
 
-\item{Continuous}{is data continuous}
+\item{Continuous}{Is the data continuous?}
 
-\item{ReturnMethodNames}{= FALSE should names of methods be returned?}
+\item{ReturnMethodNames}{Return available method names instead of validating?}
 }
 \value{
-TRUE/FALSE or a character vector
+Invisibly FALSE after successful validation, or the available names.
 }
 \description{
-This function checks whether the correct methods have been requested
+Check requested two-sample methods
 }
 \keyword{internal}

@@ -3,8 +3,8 @@
 #' @param  TS test statistics
 #' @param  typeTS format of TS
 #' @param  TSextra additional info TS
+#' @keywords internal
 #' @return Mean computation time
-#' @export
 timecheck=function(dta, TS, typeTS, TSextra) {
   f=function() calcTS(dta, TS, typeTS, TSextra)
   a=microbenchmark::microbenchmark(f(), 

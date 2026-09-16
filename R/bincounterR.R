@@ -8,7 +8,6 @@
 #' @param  Ranges =matrix(c(-Inf, Inf, -Inf, Inf),2,2) a 2x2 matrix with lower and upper bounds
 #' @keywords internal
 #' @return a list counts and vals
-#' @export
 bincounterR=function(x, y, nbins=c(5, 5), Ranges =matrix(c(-Inf, Inf, -Inf, Inf),2,2)) {
   if(length(nbins)==1) nbins=c(nbins, nbins)
   if(is.list(x)) {

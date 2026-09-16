@@ -21,16 +21,19 @@ twosample_power(
   SuppressMessages = FALSE,
   LargeSampleOnly = FALSE,
   maxProcessor,
-  doMethods = "all"
+  doMethods = "all",
+  CI = FALSE,
+  conf.level = 0.95,
+  seed = NULL
 )
 }
 \arguments{
 \item{f}{function to generate a list with data sets x and y for continuous data or
-a matrix with columns vals_x, vals_y, x and y for discrete data.}
+a four-column numeric matrix for discrete data. Standard names vals_x, vals_y, x and y are used when present; otherwise the two support/bin and two count columns are inferred from their numbers of distinct values.}
 
 \item{...}{additional arguments passed to f, up to 2.}
 
-\item{TS}{routine to calculate test statistics for new tests.}
+\item{TS}{routine to calculate test statistics for new tests. For discrete data it may have signature \code{TS(x)} or \code{TS(x, TSextra)}, where \code{x} is the four-column discrete-data matrix; the legacy 4- or 5-argument form is also accepted.}
 
 \item{TSextra}{additional info passed to TS, if necessary.}
 
@@ -61,9 +64,15 @@ sampling in the discrete data case.}
 is used. If set to 1 no parallel processing is done.}
 
 \item{doMethods}{="all", which methods should be included?}
+
+\item{CI}{=FALSE if TRUE, return Monte Carlo standard errors and Wilson confidence intervals.}
+
+\item{conf.level}{=0.95 confidence level used when CI=TRUE.}
+
+\item{seed}{=NULL optional random-number seed for reproducibility.}
 }
 \value{
-A numeric matrix or vector of power values.
+By default, a numeric matrix or vector of power values. If CI=TRUE, an object of class \code{"MD2sample_power"} with power estimates, Monte Carlo standard errors, and Wilson confidence limits.
 }
 \description{
 Estimate the power of various two sample tests using Rcpp and parallel computing.
