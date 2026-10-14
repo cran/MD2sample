@@ -53,22 +53,33 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
      rownames(pwr)=avals
      for(i in 1:length(avals)) {
        NoGood=NULL
-       for(j in 1:B) {
-         dta=rxy(avals[i], bvals[i])
-         if(DoTransform) dta=transform01(dta)
+       j = 0
+       attempts = 0
+       max_attempts = max(1000, 10*B)
+       while(j < B) {
+         attempts = attempts+1
+         if(attempts > max_attempts)
+           stop("Too many invalid simulations in power_pvals")
+         dta = rxy(avals[i], bvals[i])
+         if(DoTransform) dta = transform01(dta)
          TS_sim = calcTS(dta, TS, typeTS, TSextra)
-         if(any(is.nan(TS_sim))) {j=j-1;next}
+         if(any(is.nan(TS_sim))) next
+         j = j+1
          if(any(TS_sim<0)) {
-             NoGood=c(NoGood, seq_along(TS_sim)[TS_sim<0])
+           NoGood = c(NoGood, seq_along(TS_sim)[TS_sim<0])
          }
-         pwr[i, 1:numtests] = pwr[i, 1:numtests] + ifelse(TS_sim<alpha, 1, 0)
+         pwr[i, 1:numtests] = pwr[i, 1:numtests] +
+           ifelse(TS_sim<alpha, 1, 0)
          if(DoChi) {
-           if(length(nbins)==1) nbins=c(nbins, nbins)
-           chi=chisq2D_test_cont(dta$x, dta$y, Ranges, nbins, minexpcount,
-                                 SuppressMessages=TRUE)$p.values
-           pwr[i, numtests+1:2] = pwr[i, numtests+1:2] + ifelse(chi<alpha, 1, 0)
-         }   
-       }
+           if(length(nbins)==1) nbins = c(nbins, nbins)
+           chi = chisq2D_test_cont(
+             dta$x, dta$y, Ranges, nbins, minexpcount,
+             SuppressMessages=TRUE
+           )$p.values
+           pwr[i, numtests+1:2] = pwr[i, numtests+1:2] +
+             ifelse(chi<alpha, 1, 0)
+         }
+       }  
        pwr[i, ] = pwr[i, ,drop=FALSE]/B
        if(length(NoGood)>0) pwr[i, NoGood]=NA
      }

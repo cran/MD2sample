@@ -197,11 +197,16 @@ twosample_power=function(f, ..., TS, TSextra, alpha=0.05, B=1000,
     
     # Estimate total runtime for simulation-based and p-value-based parts.
     totaltime=2*tm*length(avals)*B
-    
-    if(max(totaltime)<20 | B<=2*ncores) 
-      if(!SuppressMessages) message("maxProcessor set to 1 for faster computation")
-    else if(!SuppressMessages) message(paste("Using ", ncores," cores..")) 
-    
+    if(max(totaltime)<20 | B<=2*ncores) {
+      if(!SuppressMessages) {
+        message("maxProcessor set to 1 for faster computation")
+      }
+    } 
+    else {
+      if(!SuppressMessages) {
+        message(paste("Using ", ncores," cores.."))
+      }  
+    }
     maxProcessor1=1
     if(totaltime[1]>20 && B>2*ncores) 
       maxProcessor1=ncores

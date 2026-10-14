@@ -110,7 +110,7 @@ Rcpp::NumericVector TS_cont(
   tmp(1)=0.0;
   for(i=0;i<(ny-1);++i) {
     for(j=i+1;j<ny;++j) {
-      if(Dz(i,j)>0) tmp(0)=tmp(0)-log(Dz(nx+i,nx+j));
+      if(Dz(nx+i, nx+j)>0) tmp(0)=tmp(0)-log(Dz(nx+i,nx+j));
       tmp(1)=tmp(1)+std::sqrt(Dz(nx+i,nx+j));
     }
   }

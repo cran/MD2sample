@@ -1,3 +1,6 @@
+# MD2sample 1.4.1 October 14, 2026
+      Some minor bug fixes
+      
 # MD2sample 1.4.0 September 16, 2026
       Improved output
       Added confidence intervals for power estimates
