@@ -1,3 +1,6 @@
+# MD2sample 1.4.2 October 22, 2026
+      A minor bug fix
+      
 # MD2sample 1.4.1 October 14, 2026
       Some minor bug fixes
       

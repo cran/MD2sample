@@ -1,6 +1,6 @@
-e361c0919f4fb45584415bcd4200f62f *DESCRIPTION
+8d5c9f4e546a3870b740210b3d647988 *DESCRIPTION
 91054ea9885b31c3a0e172d85cded002 *NAMESPACE
-4d7d19bffb8e45319ae1dd5eadf97c37 *NEWS.md
+30ba2a15c1f0f27c6f3373070c807fe9 *NEWS.md
 5a9b00a051c40511e7ef321751c9900a *R/FR.test.R
 8a8bba39a89e86239592e45c57be57ba *R/MD2sample-package.R
 f083c709c2e16d6d102b5fe2f6aa579c *R/RcppExports.R
@@ -28,10 +28,10 @@ b6f5d578aab7b6b6f85070aa93eea09e *build/vignette.rds
 c658b429777bdc44aed1736fff95828a *data/power_studies_results.rda
 8bc0b27e0fa2a128f3428625e9f6eb21 *inst/doc/CaseStudies.R
 ba5871eb949c9c5883603bc9a3e941f7 *inst/doc/CaseStudies.Rmd
-95dfc1e73fb03f89708d1fd1747a00ee *inst/doc/CaseStudies.html
+1d20229ea3e1719bff955e5cf1ec2c63 *inst/doc/CaseStudies.html
 8fc3157849f56fa166cecf43186b8555 *inst/doc/MD2sample.R
 22f3fa60d9bde05de56300ff40fb7d85 *inst/doc/MD2sample.Rmd
-86403a2d26e33e6c5a53867180903f72 *inst/doc/MD2sample.html
+5115c9a1ec312c30b6390956dd0a4e17 *inst/doc/MD2sample.html
 2c57252b06247961780e04143add3355 *inst/legacy-tests/tests.Rmd
 07c7e7cd1f83c22aee5d1d8ecac8bf5e *man/FR.test.Rd
 cc0c4607354fde16189505eac51c34a1 *man/MD2sample-package.Rd
@@ -76,7 +76,7 @@ e1d736cec15c5150ee74be6c417b84d9 *man/twosample_test_adjusted_pvalue.Rd
 6f3bfebb4444753e84c9d1a5654d9bf5 *src/Cpporder.cpp
 b6c743021d87d022a53cf123eca9116e *src/Cpporder.h
 77c55ccf57e1ee51cebc19c0965d7bf5 *src/RcppExports.cpp
-effde09cfe5f3a37bce8d17a9d6ca30c *src/TS_cont.cpp
+3001edb64acfc879e4250dc159ba9475 *src/TS_cont.cpp
 21ce5fa384c92e3301700e327245a149 *src/TS_cont.h
 063337ca590c06f798363aa2497d498e *src/TS_disc.cpp
 e52474a1759508fdd134a41593e4f27d *src/TS_disc.h

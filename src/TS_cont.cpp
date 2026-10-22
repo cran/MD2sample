@@ -121,7 +121,7 @@ Rcpp::NumericVector TS_cont(
   tmp(1)=0.0;
   for(i=0;i<nx;++i) {
     for(j=0;j<ny;++j) {
-      if(Dz(i,j)>0) tmp(0)=tmp(0)-log(Dz(i,nx+j));
+      if(Dz(i, nx+j)>0) tmp(0)=tmp(0)-log(Dz(i,nx+j));
       tmp(1)=tmp(1)+std::sqrt(Dz(i,nx+j));
     }
   }
