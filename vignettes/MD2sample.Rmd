@@ -371,7 +371,7 @@ run.studies(study=c("NormalD2", "tD2"),
             TS=chiTS.cont, 
             TSextra=TSextra,
             With.p.value = TRUE, 
-            B=500,
+            B=100,
             SuppressMessages = TRUE,
             maxProcessor=1)
 ```
@@ -439,7 +439,7 @@ This classic test uses the test statistic
 
 $$\max\{\vert \hat{F}(z_i)-\hat{G}(z_i)\vert;z_1,..,z_{n+m}\}$$
 
-It was first proposed in [@Kolmogorov1933] and [@Smirnov1939].
+It was first proposed in [@Kolmogorov1933] and [@Smirnov1939]. In more than one dimension $\hat{F}(z)$ is the proportion of observations that are smaller than $z$ in every coordinate, that is only the lower-left orthant is used. This is simpler than the versions of Peacock or Fasano and Franceschini, which use all $2^d$ orthants, and the test is therefore not invariant under reflections of the coordinates. The same is true for the other three tests based on the empirical distribution functions.
 
 **Kiuper's test**
 
@@ -460,7 +460,7 @@ It was first proposed in [@anderson1952].
 
 #### Methods based on nearest neighbors
 
-The test statistics are the average number of nearest neighbors of the $\mathbf{x}$ data set that are also from $\mathbf{x}$ plus the average number of nearest neighbors of the $\mathbf{y}$ data set that are also from $\mathbf{y}$. *NN1* uses one nearest neighbor and $NN5$ uses 5.
+The test statistics are the average number of nearest neighbors of the $\mathbf{x}$ data set that are also from $\mathbf{x}$ plus the average number of nearest neighbors of the $\mathbf{y}$ data set that are also from $\mathbf{y}$. *NN1* uses one nearest neighbor and $NN5$ uses 5, see [@schilling1986].
 
 
 
@@ -470,7 +470,7 @@ We denote by $||.||$ Euclidean distance
 
 **Aslan-Zech test**
 
-This test discussed in [@aslanzech2005] uses the test statistic
+This test discussed in [@aslanzech2005] uses the test statistic (pairs of identical observations are skipped)
 
 $$
 \begin{aligned}
@@ -485,12 +485,12 @@ Similar to the Aslan-Zech test, it uses the test statistic
 
 $$
 \begin{aligned}
-&\frac{nm}{n+m}\left[\frac{1}{nm}\sum_{i=1}^n \sum_{j=1}^m \sqrt{||x_i-y_j||} + \right.\\
-&\frac{1}{n^2}\sum_{i=1}^n \sum_{i<j} \sqrt{||x_i-x_j||} -\\
-&\left. \frac{1}{m^2}\sum_{i=1}^m \sum_{i<j} \sqrt{||y_i-y_j||} \right]\\
+&\frac{nm}{n+m}\left[\frac{1}{nm}\sum_{i=1}^n \sum_{j=1}^m ||x_i-y_j|| - \right.\\
+&\frac{1}{n^2}\sum_{i<j} ||x_i-x_j|| -\\
+&\left. \frac{1}{m^2}\sum_{i<j} ||y_i-y_j|| \right]\\
 \end{aligned}
 $$
-and was first proposed in [@baringhaus2004].
+and was first proposed in [@baringhaus2004]. Up to the factor $nm/(2(n+m))$ it is the energy statistic of Székely and Rizzo.
 
 **Biswas-Ghosh test**
 
@@ -498,9 +498,9 @@ Another variation of test based on Euclidean distance was discussed in [@biswas2
 
 $$
 \begin{aligned}
-&B_{xy} = \frac{1}{nm}\sum_{i=1}^n \sum_{j=1}^m \sqrt{||x_i-y_j||} \\
-&B_{xx}= \frac{2}{n(n-1)}\sum_{i=1}^n \sum_{i<j} \sqrt{||x_i-x_j||} \\
-&B_{yy}=\frac{2}{m(m-1)}\sum_{i=1}^m \sum_{i<j} \sqrt{||y_i-y_j||}\\
+&B_{xy} = \frac{1}{nm}\sum_{i=1}^n \sum_{j=1}^m ||x_i-y_j|| \\
+&B_{xx}= \frac{2}{n(n-1)}\sum_{i<j} ||x_i-x_j|| \\
+&B_{yy}=\frac{2}{m(m-1)}\sum_{i<j} ||y_i-y_j||\\
 &\left(B_{xx}-B_{xy}\right)^2+\left(B_{yy}-B_{xy}\right)^2
 \end{aligned}
 $$
@@ -509,23 +509,35 @@ $$
 
 **Aggregated Maximum Mean Discrepancy test**
 
-This test is based on a measure of difference between the kernel density estimates of the two data sets, using a number of different kernel bandwidths. For details see [@gretton2023].
+The maximum mean discrepancy (MMD) [@gretton2012] with a Gaussian kernel measures the difference between kernel smoothed versions of the two densities. Its power depends strongly on the bandwidth $\sigma$ of the kernel. Following [@gretton2023] the test uses the bandwidths $\sigma_{med}2^l$, $l=-4,-4+8/9,..,4$, where $\sigma_{med}$ is the median distance between the observations in the combined data set. For each bandwidth the unbiased estimator $MMD_u^2$ is found and divided by an estimate of its standard deviation under the null hypothesis, 
+
+$$
+\sqrt{2s^2\left(\frac{1}{n(n-1)}+\frac{1}{m(m-1)}+\frac{2}{nm}\right)}
+$$
+
+where $s^2$ is the mean of the squared doubly-centered kernel values of the combined data set. The test statistic is the largest of these standardized values, and its p value is found by permutation. This differs from the procedure in [@gretton2023], which finds a separate permutation threshold for each bandwidth and then adjusts the level.
 
 ### Methods whose p values are found using a large sample theory
 
 
 **Friedman-Rafski test**
 
-This test is a multi-dimensional extension of the classic Wald-Wolfowitz test bases on minimum spanning trees. It was discussed in [@friedman1979].
+This test is a multi-dimensional extension of the classic Wald-Wolfowitz test based on minimum spanning trees. It was discussed in [@friedman1979]. It is the same test as the original edge-count test *CF1* below; it is listed under its own name for backward compatibility.
 
 
 **Simple Nearest Neighboor test**
 
-Similar to the nearest neigboor tests described earlier, it uses only the number of nearest neighbors of the first data set that are also from the first data set. This number has a binomial distribution, and this can be used to find p values.
+Similar to the nearest neighbor tests described earlier, it uses only the number $C$ of observations in the first data set whose nearest neighbor is also from the first data set. The exact mean and variance of $C$ under the permutation null hypothesis follow from the nearest neighbor graph [@schilling1986], and the p value is found with a normal approximation. (Because the indicators are dependent, $C$ does not have a binomial distribution.)
 
 **Chen-Friedman tests**
 
-These tests, discussed in [@chen2017], are implemented in the *gTests* [@gtests2017] package.
+These tests, discussed in [@chen2017], are implemented in the *gTests* [@gtests2017] package, and use the minimum spanning tree of the combined data. The codes follow the order in which *gTests* returns the tests: *CF1* is the original edge-count test (the Friedman-Rafski test *FR*), *CF2* the generalized, *CF3* the weighted and *CF4* the max-type edge-count test. The weighted test was designed for data sets of different sizes; if both data sets have the same size it is identical to the original test, so then *CF3* gives the same result as *CF1* (and *FR*).
+
+The routine *method_info()* lists all methods with their full names, references and these notes:
+
+```{r}
+method_info(Continuous=TRUE)[, c("code", "name", "note")]
+```
 
 **Ball Divergence test**
 
@@ -533,6 +545,6 @@ A test described in [@ball2018] and implemented in the R package [@ballpackage20
 
 ## Methods included in MD2sample for discrete data
 
-Implemented for discrete data are versions of the Kolmogorov-Smirnov, Kuiper, Cramer-vonMises, Anderson-Darling, nearest neighboor, Aslan-Zech, Baringhaus-Franz tests as well as a chisquare test.
+Implemented for discrete data are versions of the Kolmogorov-Smirnov, Kuiper, Cramer-vonMises, Anderson-Darling, nearest neighbor, Aslan-Zech, Baringhaus-Franz tests as well as a chisquare test. The data has to contain every combination of the values in vals_x and vals_y exactly once, including those with zero counts. For the Aslan-Zech and Baringhaus-Franz tests each grid point is weighted by its counts, so that these statistics are the same as those of the continuous versions applied to the individual observations.
 
 # References

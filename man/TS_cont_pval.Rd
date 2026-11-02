@@ -4,12 +4,16 @@
 \alias{TS_cont_pval}
 \title{This function runs a number of two sample tests which find their own p value.}
 \usage{
-TS_cont_pval(x, y)
+TS_cont_pval(x, y, DoBall = TRUE)
 }
 \arguments{
 \item{x}{a matrix of numbers if data is continuous or of counts  if data is discrete.}
 
 \item{y}{a matrix of numbers if data is continuous or of counts  if data is discrete.}
+
+\item{DoBall}{=TRUE, run the Ball divergence test? Its large sample p value needs
+the eigenvalues of a matrix of the size of the combined data set, so it is
+slow for large data sets. If FALSE its statistic and p value are NA.}
 }
 \value{
 A list of two numeric vectors, the test statistics and the p values.

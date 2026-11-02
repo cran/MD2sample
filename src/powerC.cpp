@@ -37,7 +37,7 @@ List powerC(Function rxy,
                      Named("x")=tmpdata(_,2),
                      Named("y")=tmpdata(_,3));
   }
-  if(typeTS==1) TSextra["distances"]=dist(dta);
+  if(typeTS<=3) TSextra["distances"]=dist(dta);
   TS_data = calcTS(dta, TS, typeTS, TSextra);
   int const nummethods=TS_data.size();
   int cn=-1;
@@ -71,7 +71,7 @@ List powerC(Function rxy,
       GetRNGstate();
       dta=gen_sim_data(dta, TSextra);
       PutRNGstate();
-      if(typeTS==1) TSextra["distances"]=dist(dta);
+      if(typeTS<=3) TSextra["distances"]=dist(dta);
       TS_sim = calcTS(dta, TS, typeTS, TSextra);
       for(j=0;j<nummethods;++j) simdta(cn,j)=TS_sim(j);
     } 

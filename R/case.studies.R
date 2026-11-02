@@ -27,14 +27,15 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
         "NormalD5", "tD5", "FrankD5", "ClaytonD5", "GumbelD5", "JoeD5",
         "UniformFrankD5", "FrankClaytonD5", "FrankJoeD5", "UniformExponentialM5",
         "FrankExponentialM5", "FrankLinearM5", "FrankNormalM5",
-        "ClaytonExponentialM5", "ClaytonLinearM5", "ClaytonNormalM5")
+        "ClaytonExponentialM5", "ClaytonLinearM5", "ClaytonNormalM5",
+        "CheckerboardD2", "TentD2", "SumModD5")
     if (ReturnCaseNames) 
         return(cases)
     if (is.numeric(which)) 
         which = cases[which]
     uniforms = function(d=2) {
         x = matrix(stats::runif(d * nx), nx, d)
-        y = matrix(stats::runif(d * ny), nx, d)
+        y = matrix(stats::runif(d * ny), ny, d)
         out = list(x = x, y = y)
         if (nbins[1] > 0) 
             out = bincounterR(out, nbins = nbins, 
@@ -133,7 +134,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
             out
-        }, nbins = c(5, 5), param_alt = c(0, 2.5)))
+        }, nbins = c(5, 5), param_alt = c(0, 0.8)))
     }
     if (which == "HuslerReissD2") {
         return(list(f = function(theta = 0) {
@@ -158,7 +159,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x <- copula::rCopula(nx, copula = mcg1)
             wts2 <- c(a, 1 - a)
             mcg2 <- copula::mixCopula(list(cc, gc), w = wts2)
-            y <- copula::rCopula(nx, copula = mcg2)
+            y <- copula::rCopula(ny, copula = mcg2)
             out = list(x = x, y = y)
             if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
@@ -174,7 +175,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x <- copula::rCopula(nx, copula = mcg)
             wts <- c(a, 1 - a)
             mcg <- copula::mixCopula(list(un, fc), w = wts)
-            y <- copula::rCopula(nx, copula = mcg)
+            y <- copula::rCopula(ny, copula = mcg)
             out = list(x = x, y = y)
             if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
@@ -224,7 +225,7 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
             x <- copula::rCopula(nx, copula = mcg)
             wts <- c(1 - a, a)
             mcg <- copula::mixCopula(list(nc1, nc2), w = wts)
-            y <- copula::rCopula(nx, copula = mcg)
+            y <- copula::rCopula(ny, copula = mcg)
             out = list(x = x, y = y)
             if (nbins[1] > 0) out = bincounterR(out, 
                 nbins = nbins, Ranges = Ranges)
@@ -586,27 +587,27 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
     }
      if (which == "ClaytonExponentialM5") {
         return(list(f = function(s = 1) {
-            cop = copula::frankCopula(3, 5)
+            cop = copula::claytonCopula(3, 5)
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
             out = change.marginals(out, "Exponential", s)
             out
-        }, param_alt = c(1, 1.4)))
+        }, param_alt = c(1, 1.375)))
     }
     if (which == "ClaytonLinearM5") {
         return(list(f = function(s = 0) {
-            cop = copula::frankCopula(3, 5)
+            cop = copula::claytonCopula(3, 5)
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
             out = change.marginals(out, "Linear", s)
             out
-        }, param_alt = c(0, 0.4)))
+        }, param_alt = c(0, 0.438)))
     }
     if (which == "ClaytonNormalM5") {
         return(list(f = function(s = 1) {
-            cop = copula::frankCopula(3, 5)
+            cop = copula::claytonCopula(3, 5)
             x = copula::rCopula(nx, cop)
             y = copula::rCopula(ny, cop)
             out = list(x = x, y = y)
@@ -617,12 +618,76 @@ case.studies = function (which, n = 200, nx = n, ny = n, nbins = -1, Ranges = ma
     if (which == "UniformExponentialM5") {
       return(list(f = function(s = 1) {
         x = matrix(stats::runif(5 * nx), nx, 5)
-        y = matrix(stats::runif(5 * nx), nx, 5)
+        y = matrix(stats::runif(5 * ny), ny, 5)
         for(i in 1:5) {
           x[,i]=qexp(x[,i], 1)
           y[,i]=qexp(y[,i], s)
         }
         out = list(x = x, y = y)
       }, param_alt = c(1, 1.175)))
+    }
+    # Case studies where all univariate marginals (and, for SumModD5, all
+    # two-dimensional marginals) are identical under null and alternative.
+    # For each, the alternative is a mixture: a fraction a of the second
+    # sample comes from the dependent distribution, the rest is uniform.
+    if (which == "CheckerboardD2") {
+        # Mass on 8 of the 16 cells of a 4x4 grid, with the pattern in the
+        # top two rows shifted by one cell. Each row and column holds two
+        # cells, so both marginals are uniform, and the shift makes the
+        # correlation exactly zero.
+        return(list(f = function(a = 0) {
+            k = 4
+            x = matrix(stats::runif(2 * nx), nx, 2)
+            m = round(a * ny)
+            y = matrix(stats::runif(2 * (ny - m)), ny - m, 2)
+            if (m > 0) {
+                i = sample(0:(k - 1), m, replace = TRUE)
+                j = 2 * sample(0:(k/2 - 1), m, replace = TRUE) + 
+                    (i + (i >= k/2)) %% 2
+                y = rbind(y, cbind((i + stats::runif(m))/k, 
+                                   (j + stats::runif(m))/k))
+            }
+            out = list(x = x, y = y)
+            if (nbins[1] > 0) out = bincounterR(out, 
+                nbins = nbins, Ranges = Ranges)
+            out
+        }, nbins = c(5, 5), param_alt = c(0, 0.72)))
+    }
+    if (which == "TentD2") {
+        # Non-monotone dependence: y2 = T(y1) + noise (mod 1) with the tent
+        # map T(u) = 1-|2u-1|. T maps U(0,1) to U(0,1) and the noise is added
+        # modulo 1, so both marginals stay uniform; by symmetry the
+        # correlation is zero.
+        return(list(f = function(a = 0) {
+            x = matrix(stats::runif(2 * nx), nx, 2)
+            m = round(a * ny)
+            y = matrix(stats::runif(2 * (ny - m)), ny - m, 2)
+            if (m > 0) {
+                u = stats::runif(m)
+                v = (1 - abs(2 * u - 1) + stats::rnorm(m, 0, 0.05)) %% 1
+                y = rbind(y, unname(cbind(u, v)))
+            }
+            out = list(x = x, y = y)
+            if (nbins[1] > 0) out = bincounterR(out, 
+                nbins = nbins, Ranges = Ranges)
+            out
+        }, nbins = c(5, 5), param_alt = c(0, 0.4)))
+    }
+    if (which == "SumModD5") {
+        # Pairwise independent but jointly dependent:
+        # y3 = (y1 + y2 + noise) mod 1. Every one- and two-dimensional
+        # marginal of the alternative is uniform, exactly as under the null;
+        # only the joint distribution of coordinates 1-3 differs.
+        # Coordinates 4 and 5 are independent uniforms.
+        return(list(f = function(a = 0) {
+            d = 5
+            x = matrix(stats::runif(d * nx), nx, d)
+            y = matrix(stats::runif(d * ny), ny, d)
+            m = round(a * ny)
+            if (m > 0) 
+                y[1:m, 3] = (y[1:m, 1] + y[1:m, 2] + 
+                             stats::rnorm(m, 0, 0.05)) %% 1
+            list(x = x, y = y)
+        }, param_alt = c(0, 0.75)))
     }
 }

@@ -87,7 +87,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // find_dist
-Rcpp::IntegerMatrix find_dist(Rcpp::List dta);
+Rcpp::NumericMatrix find_dist(Rcpp::List dta);
 RcppExport SEXP _MD2sample_find_dist(SEXP dtaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

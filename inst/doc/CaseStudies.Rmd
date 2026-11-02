@@ -80,21 +80,22 @@ for(i in seq_along(cases)) {
 
 -   NormalD5:  multivariate normal distribution with equal marginals.  
 -   tD5:  multivariate t distribution with 5 degrees of freedom and equal marginals.                 
-- FrankD5: Frank cupola.  
-- ClaytonD5: Clayton cupola.  
+- FrankD5: Frank copula.  
+- ClaytonD5: Clayton copula.  
 - GumbelD5: Gumbel copula.  
-- JoeD5: Joe cupola.  
-- UniformFrankD5: mixture of uniform and Frank cupola.  
-- FrankClaytonD5: mixture of Frank and Clayton cupolas.  
-- FrankJoeD5: mixture of Frank and Joe cupolas.           
+- JoeD5: Joe copula.  
+- UniformFrankD5: mixture of uniform and Frank copula.  
+- FrankClaytonD5: mixture of Frank and Clayton copulas.  
+- FrankJoeD5: mixture of Frank and Joe copulas.           
+- SumModD5: pairwise independent but jointly dependent: the third coordinate is (x1+x2+noise) mod 1. All one- and two-dimensional marginals are uniform, as under the null hypothesis.  
 
 
 ## Dim=5, unequal marginals
 
 - UniformExponentialM5: Exponential distributions.  
-- FrankExponentialM5: Frank cupola with exponential marginals.  
-- FrankLinearM5: Frank cupola with linear marginals.  
-- FrankNormalM5: Frank cupola with linear marginals.  
-- ClaytonExponentialM5: Clayton cupola with exponential marginals.  
-- ClaytonLinearM5: Clayton cupola with linear marginals.  
-- ClaytonNormalM5: Clayton cupola with linear marginals.
+- FrankExponentialM5: Frank copula with exponential marginals.  
+- FrankLinearM5: Frank copula with linear marginals.  
+- FrankNormalM5: Frank copula with normal marginals.  
+- ClaytonExponentialM5: Clayton copula with exponential marginals.  
+- ClaytonLinearM5: Clayton copula with linear marginals.  
+- ClaytonNormalM5: Clayton copula with normal marginals.

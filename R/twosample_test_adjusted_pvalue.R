@@ -1,3 +1,15 @@
+#' Permutation p value
+#'
+#' The p value is (1 + number of simulated statistics >= t)/(B + 1).
+#' @param t observed test statistic
+#' @param A vector of simulated test statistics
+#' @return a number
+#' @keywords internal
+perm_pvalue=function(t, A) {
+  tol=1e-10*max(1, abs(t))
+  (1+sum(A>=t-tol, na.rm=TRUE))/(sum(!is.na(A))+1)
+}
+
 #' Helper function to find test statistics of simulated data.
 #' @param  dta a list
 #' @param TS test statistic routine
@@ -56,7 +68,8 @@ simpvals=function(dta, TS, typeTS, TSextra, A, Continuous,
            pvalsChi[i, ]=chisq2D_test_cont(simdta$x, simdta$y, Ranges, nbins, minexpcount)$p.values
     }
     else pvalsChi[i, ]=chisq2D_test_disc(simdta, minexpcount)$p.values
-    for(j in 1:num_tests) pvalsTS[i,j]=pvalsTS[i,j]+sum(tmp[j]>A[,j])/nrow(A) 
+    # p value of the simulated data set, computed exactly as for the observed data
+    for(j in 1:num_tests) pvalsTS[i,j]=perm_pvalue(tmp[j], A[,j])
   }
   colnames(pvalsTS)=names(tmp)
   list(pvalsTS=pvalsTS, pvalsOther=pvalsOther, pvalsChi=pvalsChi)
@@ -145,7 +158,7 @@ twosample_test_adjusted_pvalue <- function(x, y, vals_x=NA, vals_y=NA,
     A <- do.call(rbind,z)
   }
 
-  pvalsTS <- vapply(seq_along(TS_data), function(j) mean(TS_data[j] < A[,j]), numeric(1))
+  pvalsTS <- vapply(seq_along(TS_data), function(j) perm_pvalue(TS_data[j], A[,j]), numeric(1))
   names(pvalsTS) <- names(TS_data)
   pvalsdta <- c(pvalsTS, outOther$p.values, outChi$p.values)
 

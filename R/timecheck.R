@@ -11,7 +11,7 @@ timecheck=function(dta, TS, typeTS, TSextra) {
               unit="seconds", times=10)
   out=c(as.numeric(summary(a)["mean"]), 0)
   if(typeTS==1 & !("rnull"%in%names(TSextra))) {
-    f=function() TS_cont_pval(dta$x, dta$y)
+    f=function() TS_cont_pval(dta$x, dta$y, DoBall=!isFALSE(TSextra$DoBall))
     a=microbenchmark::microbenchmark(f(), 
               unit="seconds", times=5)
     out[2]=as.numeric(summary(a)["mean"])

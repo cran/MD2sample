@@ -77,6 +77,31 @@ is_discrete_data <- function(x) {
   TRUE
 }
 
+# Discrete data must list every combination of the values in vals_x and vals_y
+# exactly once (a full rectangular grid, zero counts allowed). The compiled
+# routines rely on this.
+check_discrete_grid <- function(vals_x, vals_y) {
+  nx <- length(unique(vals_x)); ny <- length(unique(vals_y))
+  if(length(vals_x) != nx*ny || anyDuplicated(paste(vals_x, vals_y, sep="\r")))
+    stop(paste0(
+      "Discrete data must contain each combination of the values of vals_x ",
+      "and vals_y exactly once (a full grid, cells with zero counts included)."
+    ), call.=FALSE)
+  invisible(TRUE)
+}
+
+# The discrete chi-square test is called ChiSquare by twosample_test() and 
+# test_methods(), but Chisquare in the output of twosample_power() (and in 
+# power_studies_results). Accept either name when selecting methods.
+match_method_names <- function(doMethods, available) {
+  alias <- c(ChiSquare="Chisquare", Chisquare="ChiSquare")
+  out <- doMethods
+  for(i in seq_along(out))
+    if(!out[i] %in% available && out[i] %in% names(alias) && alias[[out[i]]] %in% available)
+      out[i] <- alias[[out[i]]]
+  out
+}
+
 # Standardize a recognized discrete matrix to the internal column order.
 prepare_discrete_data <- function(x, as_list=TRUE) {
   if(is.data.frame(x)) x <- as.matrix(x)
@@ -88,6 +113,7 @@ prepare_discrete_data <- function(x, as_list=TRUE) {
 
   z <- x[, .discrete_matrix_order(x), drop=FALSE]
   colnames(z) <- c("vals_x", "vals_y", "x", "y")
+  check_discrete_grid(z[, 1], z[, 2])
   if(!as_list) return(z)
   list(vals_x=z[, 1], vals_y=z[, 2], x=z[, 3], y=z[, 4])
 }
@@ -151,6 +177,7 @@ prepare_twosample_input <- function(x, y_missing, y=NULL, vals_x=NA, vals_y=NA,
        any(abs(x1-round(x1)) > sqrt(.Machine$double.eps)) ||
        any(abs(y1-round(y1)) > sqrt(.Machine$double.eps)))
       stop("Discrete x and y must be non-negative integer counts with finite support values.", call.=FALSE)
+    check_discrete_grid(vals_x, vals_y)
     if(!SuppressMessages) message("Data is assumed to be discrete")
     dta <- list(x=x1, y=y1, vals_x=vals_x, vals_y=vals_y)
     list(Continuous=FALSE, dta=dta, rawdta=dta, x=NULL, y=NULL, Dim=2L,

@@ -15,17 +15,15 @@ chiTS.cont=function(x, y, TSextra) {
   for(k in 1:nrow(nbins)) {
     p1=quantile(c(x[,1],y[,1]), (0:nbins[k,1])/nbins[k,1])
     p2=quantile(c(x[,2],y[,2]), (0:nbins[k,2])/nbins[k,2])
-    Ox=Oy=matrix(0, nbins[k,1], nbins[k,2])
-    for(i in 1:nbins[k,1]) {
-      x1=x[x[,1]>=p1[i] & x[,1]<=p1[i+1], ]  
-      y1=y[y[,1]>=p1[i] & y[,1]<=p1[i+1], ]
-      for(j in 1:nbins[k,2]) {
-        x2=x1[x1[,2]>=p2[j] & x1[,2]<=p2[j+1], ,drop=FALSE]  
-        y2=y1[y1[,2]>=p2[j] & y1[,2]<=p2[j+1], ,drop=FALSE]
-        Ox[i,j]=nrow(x2)
-        Oy[i,j]=nrow(y2)
-      }
-    }
+    # assign each point to exactly one bin; the bins are closed on the left,
+    # open on the right, except the last one which is closed on both sides.
+    lev1=seq_len(nbins[k,1]); lev2=seq_len(nbins[k,2])
+    binx1=factor(findInterval(x[,1], p1, rightmost.closed=TRUE, all.inside=TRUE), levels=lev1)
+    binx2=factor(findInterval(x[,2], p2, rightmost.closed=TRUE, all.inside=TRUE), levels=lev2)
+    biny1=factor(findInterval(y[,1], p1, rightmost.closed=TRUE, all.inside=TRUE), levels=lev1)
+    biny2=factor(findInterval(y[,2], p2, rightmost.closed=TRUE, all.inside=TRUE), levels=lev2)
+    Ox=unclass(table(binx1, binx2))
+    Oy=unclass(table(biny1, biny2))
     Oxy=Ox+Oy
     I=(Oxy>3)    
     s=sqrt(sum(Ox[I])/sum(Oy[I]))

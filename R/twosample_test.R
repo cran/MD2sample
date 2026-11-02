@@ -133,6 +133,9 @@ twosample_test <- function(x, y, vals_x=NA, vals_y=NA, TS, TSextra, B=5000,
       for(i in 2:maxProcessor) p <- p + z[[i]]$p.values
       outTS <- list(statistics=z[[1]]$statistics, p.values=p/maxProcessor)
     }
+    # testC returns the proportion of simulated statistics >= the observed one.
+    # Use p=(1+#{T*>=T})/(B+1), which is never 0 and gives a valid level.
+    outTS$p.values <- (B_used*outTS$p.values+1)/(B_used+1)
   } else {
     maxProcessor <- NA_integer_
     B_used <- 0L

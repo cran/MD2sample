@@ -10,7 +10,7 @@ find_dist(dta)
 \item{dta}{A list of matrices}
 }
 \value{
-A  matrix
+A numeric matrix of Euclidean distances
 }
 \description{
 find pairwise Euclidean distances

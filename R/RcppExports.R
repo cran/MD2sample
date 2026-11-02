@@ -67,7 +67,7 @@ calcTS <- function(dta, TS, typeTS, TSextra) {
 #' 
 #' @param dta A list of matrices
 #' @keywords internal
-#' @return A  matrix
+#' @return A numeric matrix of Euclidean distances
 find_dist <- function(dta) {
     .Call(`_MD2sample_find_dist`, dta)
 }
@@ -117,9 +117,9 @@ mdecdf <- function(dta, pts) {
 }
 
 #' Find test statistic for MMD test
-#' 
-#' @param x A matrix 
-#' @param y A matrix 
+#'
+#' @param x A matrix
+#' @param y A matrix
 #' @keywords internal
 #' @return A numeric vector with test statistics
 mmdagg <- function(x, y) {

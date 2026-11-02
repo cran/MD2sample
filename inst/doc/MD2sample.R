@@ -174,7 +174,7 @@ run.studies(study=c("NormalD2", "tD2"),
             TS=chiTS.cont, 
             TSextra=TSextra,
             With.p.value = TRUE, 
-            B=500,
+            B=100,
             SuppressMessages = TRUE,
             maxProcessor=1)
 
@@ -206,4 +206,7 @@ twosample_test(dta, rnull=rnull, B=BT, maxProcessor = 1)
 
 ## ----eval=FALSE---------------------------------------------------------------
 # twosample_power(f, c(0, 0.5), rnull=rnull, B=BP, maxProcessor=1)
+
+## -----------------------------------------------------------------------------
+method_info(Continuous=TRUE)[, c("code", "name", "note")]
 

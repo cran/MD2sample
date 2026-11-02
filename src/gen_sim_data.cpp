@@ -171,13 +171,18 @@ Rcpp::List gen_disc(IntegerVector x,
         newx(i)=tt(0);
       }   
       int d=sum(x)-sum(newx);
+/*  adjust newx so that its total equals sum(x). A cell is only reduced 
+    if it has a positive count and only increased if the corresponding
+    y count stays non-negative */      
       while (d<0) {
         j=getI(pr);
+        if(newx(j)==0) continue;
         newx(j)=newx(j)-1;
         d=d+1;
       }
       while (d>0) {
         j=getI(pr);
+        if(newx(j)==x(j)+y(j)) continue;
         newx(j)=newx(j)+1;
         d=d-1;
       }

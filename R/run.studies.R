@@ -17,6 +17,9 @@
 #' @param B = 1000, number of simulation runs.
 #' @param  maxProcessor  number of cores to use. If missing the number of physical cores-1 
 #'             is used. If set to 1 no parallel processing is done.
+#' @param seed =NULL, optional random-number seed. Case study number k in the list
+#'             returned by case.studies(ReturnCaseNames=TRUE) uses the seed seed+k,
+#'             so any single case study can be reproduced on its own.
 #' @return A (list of ) matrices of p.values.
 #' @examples
 #' #The new test is a (included) chi square test:
@@ -27,7 +30,7 @@
 #' @export
 run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,  
                         alpha=0.05, param_alt, nsample=c(200, 200), 
-                        SuppressMessages =FALSE, B=1000, maxProcessor) {
+                        SuppressMessages =FALSE, B=1000, maxProcessor, seed=NULL) {
   
   # Get all available case-study names from the package.
   list.of.studies=MD2sample::case.studies(ReturnCaseNames=TRUE)
@@ -38,14 +41,14 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
   # Allow studies to be selected by numeric index.
   if(is.numeric(study)) study=list.of.studies[study]
   
-  # For discrete runs, remove studies ending in "D5".
-  if(!Continuous) study=study[!endsWith(study,"D5")]
+  # For discrete runs, remove the 5-dimensional studies (names ending in "D5"
+  # or "M5"); they have no discrete version.
+  if(!Continuous) study=study[!(endsWith(study,"D5") | endsWith(study,"M5"))]
   
   # If only one sample size is supplied, use it for both samples.
   if(length(nsample)==1) nsample=c(nsample, nsample)
   
   # Track whether results differ from the package's stored default studies.
-  if(length(nsample)==1) nsample=c(nsample, nsample)
   ChangedStudies=FALSE 
   if(alpha!=0.05 || nsample[1]!=200 || nsample[2]!=200)
     ChangedStudies=TRUE
@@ -92,13 +95,18 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
   
   for(i in seq_along(study)) {
     
+    # Seed for this case study: seed+k, where k is its number in the list.
+    seed_i=NULL
+    if(!is.null(seed)) seed_i=seed+match(study[i], list.of.studies)
+    
     # Retrieve generator and study settings with requested sample sizes.
     tmp=MD2sample::case.studies(study[i], nx=nsample[1], ny=nsample[2])
     
-    # For discrete studies, preserve the study-specific number of bins.
+    # For discrete studies, regenerate the study with binned data, using the
+    # study-specific number of bins.
     if(!Continuous) 
-      newpwr[[i]]=MD2sample::case.studies(study[i], nx=nsample[1], ny=nsample[2],
-                                          nbins=tmp$nbins)
+      tmp=MD2sample::case.studies(study[i], nx=nsample[1], ny=nsample[2],
+                                  nbins=tmp$nbins)
     
     if(!SuppressMessages) message(paste("Running case study", study[i],"..."))
     
@@ -106,7 +114,7 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
     if(RerunIncludedTests) {
       newpwr[[i]]=MD2sample::twosample_power(tmp$f, param_alt[i,], 
                                              alpha=alpha,  SuppressMessages=SuppressMessages, 
-                                             B=B, maxProcessor=maxProcessor) 
+                                             B=B, maxProcessor=maxProcessor, seed=seed_i) 
     }    
     
     # Run power for a custom test that returns p-values directly.
@@ -116,6 +124,7 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
       # Wrap the study generator so it has the argument structure expected
       # by power_pvals().
       rxy=function(a,b=0) tmp$f(a)
+      if(!is.null(seed_i)) set.seed(seed_i)
       
       newpwr[[i]]=power_pvals(rxy, param_alt[i, ], 
                                          0, TS, typeTS, TSextra, alpha=alpha, B=B)
@@ -126,7 +135,7 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
       newpwr[[i]]=MD2sample::twosample_power(tmp$f, param_alt[i, ], 
                                              TS=TS, TSextra=TSextra, alpha=alpha,  
                                              SuppressMessages=SuppressMessages,
-                                             B=B, maxProcessor=maxProcessor)   
+                                             B=B, maxProcessor=maxProcessor, seed=seed_i)   
     }    
   } 
 
@@ -163,7 +172,7 @@ run.studies <- function(study, Continuous=TRUE, TS, TSextra, With.p.value=FALSE,
     a1=apply(allpwr, 1, rank)
     rownames(a1)=colnames(allpwr)
     
-    message("Average number of times a test is close to best:")
+    message("Average rank of each test over the case studies (larger is better):")
     print(sort(apply(a1,1,mean)))
   }  
   

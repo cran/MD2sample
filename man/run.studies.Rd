@@ -15,7 +15,8 @@ run.studies(
   nsample = c(200, 200),
   SuppressMessages = FALSE,
   B = 1000,
-  maxProcessor
+  maxProcessor,
+  seed = NULL
 )
 }
 \arguments{
@@ -42,6 +43,10 @@ If missing included values are used.}
 
 \item{maxProcessor}{number of cores to use. If missing the number of physical cores-1
 is used. If set to 1 no parallel processing is done.}
+
+\item{seed}{=NULL, optional random-number seed. Case study number k in the list
+returned by case.studies(ReturnCaseNames=TRUE) uses the seed seed+k,
+so any single case study can be reproduced on its own.}
 }
 \value{
 A (list of ) matrices of p.values.

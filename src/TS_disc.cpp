@@ -129,28 +129,35 @@ Rcpp::NumericVector TS_disc(Rcpp::IntegerVector x,
   TS(4)=TS(4)/4.0/(sx+sy);
  
 /*  Aslan-Zech, Baringhaus-Franz*/   
+/*  Same statistics as for continuous data, with each cell weighted by its
+    counts. Pairs of observations in the same cell have distance 0: they 
+    contribute nothing to BF and are skipped for AZ (as ties are for 
+    continuous data). Cross-sample pairs need both x_i*y_j and x_j*y_i. */
 
   NumericMatrix taz(2,3);
-  int a1,a2,a3;
+  double a1,a2,a3;
   double ds;
   n=dta.nrow();
   for(i=0;i<(n-1);++i) {
     for(j=(i+1);j<n;++j) {
-      ds=(dta(i,0)-dta(j,0))*(dta(i,0)-dta(j,0))+
-                (dta(i,1)-dta(j,1))*(dta(i,1)-dta(j,1));
-      a1=dta(i,2)*dta(j,2), a2=dta(i,3)*dta(j,3), a3=dta(i,2)*dta(j,3);
-      if(ds>0) taz(0,0)=taz(0,0)-a1*log(ds);         
-      taz(1,0)=taz(1,0)+a1*sqrt(ds);         
-      if(ds>0) taz(0,1)=taz(0,1)-a2*log(ds);         
-      taz(1,1)=taz(1,1)+a2*sqrt(ds);         
-      if(ds>0) taz(0,2)=taz(0,2)-a3*log(ds);         
-      taz(1,2)=taz(1,2)+a3*sqrt(ds);             
+      ds=std::sqrt((dta(i,0)-dta(j,0))*(dta(i,0)-dta(j,0))+
+                   (dta(i,1)-dta(j,1))*(dta(i,1)-dta(j,1)));
+      a1=dta(i,2)*dta(j,2); 
+      a2=dta(i,3)*dta(j,3); 
+      a3=dta(i,2)*dta(j,3)+dta(j,2)*dta(i,3);
+      if(ds>0) {
+        taz(0,0)=taz(0,0)-a1*log(ds);         
+        taz(0,1)=taz(0,1)-a2*log(ds);         
+        taz(0,2)=taz(0,2)-a3*log(ds);         
+      }  
+      taz(1,0)=taz(1,0)+a1*ds;         
+      taz(1,1)=taz(1,1)+a2*ds;         
+      taz(1,2)=taz(1,2)+a3*ds;             
     } 
   }
-  TS(5)=std::abs(taz(0,0)/sx/sx-taz(0,2)/sx/sy)+
-        std::abs(taz(0,1)/sy/sy-taz(0,2)/sx/sy);
-  TS(6)=std::abs(taz(1,0)/sx/sx-taz(1,2)/sx/sy)+
-        std::abs(taz(1,1)/sy/sy-taz(1,2)/sx/sy); 
+  TS(5)=taz(0,0)/sx/sx+taz(0,1)/sy/sy-taz(0,2)/sx/sy;
+  TS(6)=double(sx)*double(sy)/double(sx+sy)*
+        (taz(1,2)/sx/sy-taz(1,0)/sx/sx-taz(1,1)/sy/sy);
   TS.names()=methods;
   return TS;
 } 

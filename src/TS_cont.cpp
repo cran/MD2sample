@@ -65,16 +65,17 @@ Rcpp::NumericVector TS_cont(
   TS(3)=TS(3)*nx*ny/n/n;
 
 /*  Nearest Neighbors, Schilling, Narsky*/ 
+/*  NN1 uses the first nearest neighbor, NN5 uses all k (=5) neighbors 
+    returned by knn. The number of neighbors is the number of columns of NN,
+    not the dimension of the data. */
   Function knn=TSextra["knn"];
   IntegerMatrix NN = knn(z);
+  int const kNN=NN.ncol();
   tmp1=0.0;
   tmp2=0.0;
   for(i=0;i<nx;++i) {
-    if(NN(i,0)<=nx) {
-      tmp1=tmp1+1;
-      tmp2=tmp2+1;
-    }
-    for(j=1;j<Dim;++j) 
+    if(NN(i,0)<=nx) tmp1=tmp1+1;
+    for(j=0;j<kNN;++j) 
       if(NN(i,j)<=nx) tmp2=tmp2+1;
   }
   TS(4)=tmp1/double(nx);
@@ -82,25 +83,25 @@ Rcpp::NumericVector TS_cont(
   tmp1=0.0;
   tmp2=0.0;  
   for(i=0;i<ny;++i) {
-    if(NN(i+nx,0)>nx){
-        tmp1=tmp1+1;
-        tmp2=tmp2+1;
-    }
-    for(j=1;j<Dim;++j) {
-        if(NN(i+nx,j)>nx) tmp2=tmp2+1;
-    }    
+    if(NN(i+nx,0)>nx) tmp1=tmp1+1;
+    for(j=0;j<kNN;++j) 
+      if(NN(i+nx,j)>nx) tmp2=tmp2+1;
   }
   TS(4)=TS(4)+tmp1/double(ny);
   TS(5)=TS(5)+tmp2/double(ny);
   
 /*  Aslan-Zech, Baringhaus-Franz, Biswas-Ghosh */  
+/*  Dz holds Euclidean distances ||z_i-z_j|| (see find_dist).
+    AZ:  R(r)=-log(r), pairs with r=0 (ties) are skipped
+    BF:  Baringhaus & Franz (2004), phi(r)=r
+    BG:  Biswas & Ghosh (2014), Euclidean distance  */
 
   NumericVector tmp(2), BG(3);
   NumericMatrix Dz=TSextra["distances"];
   for(i=0;i<(nx-1);++i) {
      for(j=i+1;j<nx;++j) {
        if(Dz(i,j)>0) tmp(0)=tmp(0)-log(Dz(i,j));
-       tmp(1)=tmp(1)+std::sqrt(Dz(i,j));
+       tmp(1)=tmp(1)+Dz(i,j);
      }   
   }
   TS(6)=tmp(0)/nx/nx;
@@ -111,7 +112,7 @@ Rcpp::NumericVector TS_cont(
   for(i=0;i<(ny-1);++i) {
     for(j=i+1;j<ny;++j) {
       if(Dz(nx+i, nx+j)>0) tmp(0)=tmp(0)-log(Dz(nx+i,nx+j));
-      tmp(1)=tmp(1)+std::sqrt(Dz(nx+i,nx+j));
+      tmp(1)=tmp(1)+Dz(nx+i,nx+j);
     }
   }
   TS(6)=TS(6)+tmp(0)/ny/ny;
@@ -122,15 +123,14 @@ Rcpp::NumericVector TS_cont(
   for(i=0;i<nx;++i) {
     for(j=0;j<ny;++j) {
       if(Dz(i, nx+j)>0) tmp(0)=tmp(0)-log(Dz(i,nx+j));
-      tmp(1)=tmp(1)+std::sqrt(Dz(i,nx+j));
+      tmp(1)=tmp(1)+Dz(i,nx+j);
     }
   }
   TS(6)=TS(6)-tmp(0)/nx/ny;
   TS(7)=TS(7)-tmp(1)/nx/ny;
-  TS(7)=TS(7)*nx*ny/n;
-  TS(7)=-TS(7)/100.0;
+  TS(7)=-TS(7)*nx*ny/n;
   BG(2)=tmp(1)/nx/ny;
-  TS(8)=(BG(0)-BG(2))*(BG(0)-BG(2))+(BG(1)-BG(2))*(BG(1)-BG(2))/100.0;
+  TS(8)=(BG(0)-BG(2))*(BG(0)-BG(2))+(BG(1)-BG(2))*(BG(1)-BG(2));
 /* Maximum Mean Discrepancy (MMD) test*/  
   TS(9)=mmdagg(x, y);
   

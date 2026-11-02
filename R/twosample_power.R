@@ -249,7 +249,7 @@ twosample_power=function(f, ..., TS, TSextra, alpha=0.05, B=1000,
     if(nldots==1) rownames(pwr)=avals
     if(nldots==2) rownames(pwr)=paste0(avals,"|",bvals)  
     
-    if(doMethods[1]!="all") pwr=pwr[, doMethods, drop=FALSE]
+    if(doMethods[1]!="all") pwr=pwr[, match_method_names(doMethods, colnames(pwr)), drop=FALSE]
     labels <- if(nldots==0) rep("", nrow(pwr)) else if(nldots==1) as.character(avals) else paste0(avals,"|",bvals)
     return(.format_MD2sample_power(pwr, B, CI, conf.level, alpha, labels, seed))
   }
@@ -342,7 +342,7 @@ twosample_power=function(f, ..., TS, TSextra, alpha=0.05, B=1000,
   if(nldots==2) rownames(pwr)=paste0(avals,"|",bvals)
   
   # Keep only requested methods.
-  if(doMethods[1]!="all") pwr=pwr[, doMethods, drop=FALSE]
+  if(doMethods[1]!="all") pwr=pwr[, match_method_names(doMethods, colnames(pwr)), drop=FALSE]
   
   labels <- if(nldots==0) rep("", nrow(pwr)) else if(nldots==1) as.character(avals) else paste0(avals,"|",bvals)
   .format_MD2sample_power(pwr, B, CI, conf.level, alpha, labels, seed)

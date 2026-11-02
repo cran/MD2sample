@@ -41,7 +41,9 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
      if(typeTS==1 & Dim==2) DoChi=TRUE
      if(typeTS==1) {
        typeTS=2 
-       TS=function(x,y) TS_cont_pval(x, y)$p.values
+       # TSextra$DoBall=FALSE skips the (slow) Ball divergence test, its power is NA
+       DoBall=!isFALSE(TSextra$DoBall)
+       TS=function(x,y) TS_cont_pval(x, y, DoBall=DoBall)$p.values
      }   
      TS_data = calcTS(dta, TS, typeTS, TSextra)
      numtests=length(TS_data)
@@ -65,8 +67,8 @@ power_pvals = function(rxy, avals, bvals, TS, typeTS, TSextra=list(a=0),
          TS_sim = calcTS(dta, TS, typeTS, TSextra)
          if(any(is.nan(TS_sim))) next
          j = j+1
-         if(any(TS_sim<0)) {
-           NoGood = c(NoGood, seq_along(TS_sim)[TS_sim<0])
+         if(any(TS_sim<0, na.rm=TRUE)) {
+           NoGood = c(NoGood, which(TS_sim<0))
          }
          pwr[i, 1:numtests] = pwr[i, 1:numtests] +
            ifelse(TS_sim<alpha, 1, 0)

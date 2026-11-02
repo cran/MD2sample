@@ -38,14 +38,20 @@ List testC(List dta,
     GetRNGstate();
     List simdta=gen_sim_data(dta, TSextra);
     PutRNGstate();
-    if(typeTS==1) TSextra["distances"]=dist(simdta);
+    if( (typeTS==1) || (typeTS==3) ) TSextra["distances"]=dist(simdta);
     TS_sim= calcTS(simdta, TS, typeTS, TSextra);
+/*  count simulated statistics at least as large as the observed one. 
+    A small relative tolerance makes sure that ties are counted even if
+    the two values differ by round-off error  */
     for(i=0;i<nummethods;++i) {
-       if(TS_data(i)<TS_sim(i)) pvals(i)=pvals(i)+1.0;
+       double tol=1e-10*std::max(1.0, std::abs(TS_data(i)));
+       if(TS_sim(i)>=TS_data(i)-tol) pvals(i)=pvals(i)+1.0;
     }
   }
 
-/* find p values and return list with test statistics and p values */  
+/* proportion of simulated statistics >= observed. The +1 correction
+   p=(1+B*pvals)/(B+1) is applied in twosample_test, after the results
+   of all processors have been combined. */  
   for(i=0;i<nummethods;++i) pvals(i)=pvals(i)/B;
   return  List::create(Named("statistics")=stats, Named("p.values")=pvals);
 }
